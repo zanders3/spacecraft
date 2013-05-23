@@ -223,7 +223,7 @@ public class Chunk : MonoBehaviour
 		}
 	}
 
-	void OnDrawGizmos()
+	protected virtual void OnDrawGizmos()
 	{
 		Gizmos.matrix = transform.localToWorldMatrix;
 		Gizmos.DrawWireCube(

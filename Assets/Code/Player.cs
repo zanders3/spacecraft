@@ -16,14 +16,28 @@ public class Player : MonoBehaviour
         Screen.lockCursor = true;
     }
 
+    Vector3 gravityPosition = new Vector3(16.0f, 16.0f, -16.0f);
+
     void UpdatePlayerPosition()
     {
+        //THIS PROJECT IS FULL OF MATHS AAARRGH
         rotX += Input.GetAxis("LookX");
         rotY -= Input.GetAxis("LookY");
-        
-        rigidbody.rotation = Quaternion.AngleAxis(rotX, Vector3.up) * Quaternion.AngleAxis(rotY, Vector3.right);
+
+        Vector3 up = (transform.position - gravityPosition).normalized;
+        Vector3 right = up != Vector3.up ? Vector3.Cross(Vector3.up, up) : Vector3.right;
+
+        Vector3 gravity = up * -9.8f;
+        Vector3 movement = transform.TransformDirection(new Vector3(Input.GetAxis("MoveX"), 0.0f, Input.GetAxis("MoveZ"))) * 5.0f;
+
+        Vector3 velocity = rigidbody.velocity;
+        //float speedDueToGravity = Vector3.Dot(gravity.normalized, velocity);
+        //velocity -= velocity.normalized * speedDueToGravity;
+
+        rigidbody.rotation = Quaternion.AngleAxis(rotX, up) * Quaternion.AngleAxis(rotY, right);
         rigidbody.freezeRotation = true;
-        rigidbody.AddForce(transform.TransformDirection(new Vector3(Input.GetAxis("MoveX"), 0.0f, Input.GetAxis("MoveZ"))) * 20.0f - rigidbody.velocity, ForceMode.Impulse);
+        rigidbody.AddForce(movement - velocity * 0.5f, ForceMode.Impulse);
+        rigidbody.AddForce(gravity);
     }
 
     void Update()
