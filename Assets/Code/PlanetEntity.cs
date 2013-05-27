@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 public class PlanetEntity : Entity
 {
-    public const float PlanetScale = Chunk.BlockSize * 2;
+    public const float PlanetScale = Chunk.BlockSize;
     
     public override bool UseMeshCollider { get { return true; } }
 
     public override void InverseTransformVertex(Vector3 pos, Vector3 normal, out Vector3 chunkPos, out Vector3 chunkNormal)
     {
         base.InverseTransformVertex(pos, normal, out chunkPos, out chunkNormal);
-        
-        Vector3 surfNormal = (chunkPos - new Vector3(PlanetScale, PlanetScale, PlanetScale)) / PlanetScale;
+
+        Vector3 surfNormal = chunkPos / PlanetScale;
         
         //TODO: fix this. Accurate at the surface. Not so much lower down, or above.
         float height = surfNormal.magnitude;
@@ -39,24 +39,21 @@ public class PlanetEntity : Entity
     
     public override void TransformVertex(Point3D chunkPos, Vector3 pos, Vector3 normal, ref List<Vector3> verts, ref List<Vector3> normals)
     {
-        Vector3 offset = new Vector3(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize);
-        Vector3 worldPos = pos + offset;
-        
-        Vector3 surfNormal = (worldPos - new Vector3(PlanetScale, PlanetScale, PlanetScale)) / PlanetScale;
-        Vector3 maxDir = new Vector3(Mathf.Abs(surfNormal.x), Mathf.Abs(surfNormal.y), Mathf.Abs(surfNormal.z));
-        
+        Vector3 chunkWorldPos = new Vector3(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize);
+        Vector3 surfNormal = (pos + chunkWorldPos) / PlanetScale;
+
         float height = 1.0f;
-        if (chunkPos.y < 0 || chunkPos.y > 3)
+        if (Mathf.Abs(surfNormal.y) > 1.0f)
         {
             height = surfNormal.y > 0 ? surfNormal.y : -surfNormal.y;
             surfNormal.y = surfNormal.y > 0 ? 1.0f : -1.0f;
-        } 
-        else if (chunkPos.x < 0 || chunkPos.x > 3)
+        }
+        else if (Mathf.Abs(surfNormal.x) > 1.0f)
         {
             height = surfNormal.x > 0 ? surfNormal.x : -surfNormal.x;
             surfNormal.x = surfNormal.x > 0 ? 1.0f : -1.0f;
         }
-        else if (chunkPos.z < 0 || chunkPos.z > 3)
+        else if (Mathf.Abs(surfNormal.z) > 1.0f)
         {
             height = surfNormal.z > 0 ? surfNormal.z : -surfNormal.z;
             surfNormal.z = surfNormal.z > 0 ? 1.0f : -1.0f;
@@ -64,7 +61,7 @@ public class PlanetEntity : Entity
         
         surfNormal = Cubize(surfNormal);
         
-        verts.Add((surfNormal * height * PlanetScale) + new Vector3(PlanetScale, PlanetScale, PlanetScale) - offset);
+        verts.Add((surfNormal * height * PlanetScale) - chunkWorldPos);
         
         if (Vector3.Dot(surfNormal, normal) > 0.5f)
             normals.Add(surfNormal);

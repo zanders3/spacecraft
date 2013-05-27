@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
         Screen.lockCursor = true;
     }
 
-    Vector3 gravityPosition = new Vector3(16.0f, 16.0f, -16.0f);
+    Vector3 gravityPosition = Vector3.zero;//new Vector3(16.0f, 16.0f, -16.0f);
 
     void UpdatePlayerPosition()
     {
@@ -24,7 +24,6 @@ public class Player : MonoBehaviour
         Vector3 up = (transform.position - gravityPosition).normalized;
         rigidbody.rotation = Quaternion.AngleAxis(dy, transform.right) * Quaternion.AngleAxis(dx, up) * Quaternion.LookRotation(transform.forward, up);
 
-       // Vector3 movement = transform.TransformDirection(new Vector3(Input.GetAxis("MoveX"), 0.0f, Input.GetAxis("MoveZ"))) * 5.0f;
         Vector3 movement = transform.right * Input.GetAxis("MoveX") + Vector3.Cross(transform.right, up) * Input.GetAxis("MoveZ");
 
         rigidbody.freezeRotation = true;

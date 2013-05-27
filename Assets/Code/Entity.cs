@@ -10,13 +10,13 @@ public class Entity : MonoBehaviour
     private List<Chunk> chunkUpdates = new List<Chunk>();
     private ChunkStore chunkStore;
 
-    public virtual bool UseMeshCollider { get { return false; } }
+    public virtual bool UseMeshCollider { get { return true; } }
 
 	void Start()
 	{
 		chunkStore = new ChunkStore(Material, transform);
 
-        int min = 0, max = 4;//-4, max = 8;
+        /*int min = 0, max = 4;//-4, max = 8;
 
         for (int x = min; x<max; x++)
             for (int y = 0; y<4; y++)
@@ -31,7 +31,17 @@ public class Entity : MonoBehaviour
             if (z < 0 || z > 3)
                 for (int x = 0; x<4; x++)
                     for (int y = 0; y<4; y++)
-                        chunkUpdates.Add(chunkStore.Add(x * Chunk.BlockSize, y * Chunk.BlockSize, z * Chunk.BlockSize));
+                        chunkUpdates.Add(chunkStore.Add(x * Chunk.BlockSize, y * Chunk.BlockSize, z * Chunk.BlockSize));*/
+        chunkUpdates.Add(chunkStore.Add(0, 0, 0));
+        chunkUpdates.Add(chunkStore.Add(-1, 0, 0));
+        chunkUpdates.Add(chunkStore.Add(0, -1, 0));
+        chunkUpdates.Add(chunkStore.Add(0, 0, -1));
+        chunkUpdates.Add(chunkStore.Add(-1, 0, -1));
+        chunkUpdates.Add(chunkStore.Add(-1, -1, 0));
+        chunkUpdates.Add(chunkStore.Add(0, -1, -1));
+        chunkUpdates.Add(chunkStore.Add(-1, -1, -1));
+
+        chunkUpdates.Add(chunkStore.Add(0, 8, 0));
 	}
 
     void Update()

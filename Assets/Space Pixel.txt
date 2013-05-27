@@ -10,7 +10,7 @@ Entities
 * Voxel sphere generation with gravity.
 
 Blocks
-* Grass, Dirt, Stone, Iron Ore, Uranium Ore, Copper Ore
+* Dirt, Stone, Bedrock, Iron Ore, Uranium Ore, Copper Ore
 * Fabricator, Nuclear Reactor Core, Ion Drive, Airlock, Pipe, Wiring, Steel Plating, Steel, Pilot Seat
 
 Ships
