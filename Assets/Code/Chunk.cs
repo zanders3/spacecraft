@@ -13,6 +13,8 @@ public enum BlockType
 
 public struct Point3D
 {
+    public static Point3D Zero { get { return new Point3D(0, 0, 0); } }
+
 	public Point3D(int x, int y, int z)
 	{
 		this.x = x;
@@ -171,7 +173,6 @@ public class Chunk : MonoBehaviour
 
 	void GenerateMesh(Point3D n, Point3D t, Point3D bn, Point3D o, bool flip, ref List<Vector3> verts, ref List<Vector3> normals, ref List<Vector2> tex, ref List<int> tris)
 	{
-        Entity entity = Entity;
 		Vector3 normal = new Vector3(n.x, n.y, n.z);
 
 		for (int x = 1; x<BlockSize+1; x++)
@@ -195,10 +196,20 @@ public class Chunk : MonoBehaviour
 						}
 
 						int ox = x + o.x - 1, oy = y + o.y - 1, oz = z + o.z - 1;
-						entity.TransformVertex(ChunkPos, new Vector3(ox, 		oy, 		 oz), normal, ref verts, ref normals);
-						entity.TransformVertex(ChunkPos, new Vector3(ox+t.x,		oy+t.y, 	 oz+t.z), normal, ref verts, ref normals);
-						entity.TransformVertex(ChunkPos, new Vector3(ox+bn.x,	oy+bn.y, 	 oz+bn.z), normal, ref verts, ref normals);
-						entity.TransformVertex(ChunkPos, new Vector3(ox+t.x+bn.x,oy+t.y+bn.y, oz+t.z+bn.z), normal, ref verts, ref normals);
+                        Vector3 posA, posB, posC, posD;
+						AddVertex(ChunkPos, new Vector3(ox, 		oy, 		 oz), ref verts, out posA);
+						AddVertex(ChunkPos, new Vector3(ox+t.x,		oy+t.y, 	 oz+t.z), ref verts, out posB);
+						AddVertex(ChunkPos, new Vector3(ox+bn.x,	oy+bn.y, 	 oz+bn.z), ref verts, out posC);
+						AddVertex(ChunkPos, new Vector3(ox+t.x+bn.x,oy+t.y+bn.y, oz+t.z+bn.z), ref verts, out posD);
+
+                        Vector3 faceNormal = Vector3.Cross((posC - posA), (posB - posA)).normalized;
+                        if (Vector3.Dot(faceNormal, normal) < 0.0f)
+                            faceNormal = -faceNormal;
+
+                        normals.Add(faceNormal);
+                        normals.Add(faceNormal);
+                        normals.Add(faceNormal);
+                        normals.Add(faceNormal);
 
 						tex.Add(new Vector2(0.0f, 0.0f));
 						tex.Add(new Vector2(1.0f, 0.0f));
@@ -209,6 +220,14 @@ public class Chunk : MonoBehaviour
 			}
 		}
 	}
+
+    void AddVertex(Point3D chunkPos, Vector3 pos, ref List<Vector3> verts, out Vector3 oPos)
+    {
+        Vector3 normal = Vector3.zero;
+        Entity.TransformVertex(chunkPos, ref pos, ref normal);
+        oPos = pos;
+        verts.Add(pos);
+    }
 
 	void OnDrawGizmos()
 	{

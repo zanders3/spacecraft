@@ -105,10 +105,8 @@ public class Entity : MonoBehaviour
 			return chunk.GetBlock(x, y, z);
 	}
 
-    public virtual void TransformVertex(Point3D chunkPos, Vector3 pos, Vector3 normal, ref List<Vector3> verts, ref List<Vector3> normals)
+    public virtual void TransformVertex(Point3D chunkPos, ref Vector3 pos, ref Vector3 normal)
     {
-        verts.Add(pos);
-        normals.Add(normal);
     }
 
     public virtual void InverseTransformVertex(Vector3 pos, Vector3 normal, out Vector3 chunkPos, out Vector3 chunkNormal)

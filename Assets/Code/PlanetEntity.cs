@@ -7,41 +7,11 @@ public class PlanetEntity : Entity
     
     public override bool UseMeshCollider { get { return true; } }
 
-    public override void InverseTransformVertex(Vector3 pos, Vector3 normal, out Vector3 chunkPos, out Vector3 chunkNormal)
-    {
-        base.InverseTransformVertex(pos, normal, out chunkPos, out chunkNormal);
-
-        Vector3 surfNormal = chunkPos / PlanetScale;
-        
-        //TODO: fix this. Accurate at the surface. Not so much lower down, or above.
-        float height = surfNormal.magnitude;
-        surfNormal = InverseCubize(surfNormal / height) * PlanetScale;
-        
-        chunkPos = (surfNormal * height) + new Vector3(PlanetScale, PlanetScale, PlanetScale);
-        //Debug.Log(chunkPos.x + ", " + chunkPos.y + ", " + chunkPos.z);
-        
-        int nx = (int)surfNormal.x, ny = (int)surfNormal.y, nz = (int)surfNormal.z;
-        
-        //TODO: this bit doesn't work for sides and backfaces.
-        if (nx == PlanetScale)
-            chunkNormal = Vector3.right;
-        else if (nx == -PlanetScale)
-            chunkNormal = Vector3.left;
-        else if (ny == PlanetScale)
-            chunkNormal = Vector3.up;
-        else if (ny == -PlanetScale)
-            chunkNormal = Vector3.down;
-        else if (nz == PlanetScale)
-            chunkNormal = Vector3.forward;
-        else if (nz == -PlanetScale)
-            chunkNormal = Vector3.back;
-    }
-    
-    public override void TransformVertex(Point3D chunkPos, Vector3 pos, Vector3 normal, ref List<Vector3> verts, ref List<Vector3> normals)
+    public override void TransformVertex(Point3D chunkPos, ref Vector3 pos, ref Vector3 normal)
     {
         Vector3 chunkWorldPos = new Vector3(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize);
         Vector3 surfNormal = (pos + chunkWorldPos) / PlanetScale;
-
+        
         float height = 1.0f;
         if (Mathf.Abs(surfNormal.y) > 1.0f)
         {
@@ -61,12 +31,10 @@ public class PlanetEntity : Entity
         
         surfNormal = Cubize(surfNormal);
         
-        verts.Add((surfNormal * height * PlanetScale) - chunkWorldPos);
+        pos = (surfNormal * height * PlanetScale) - chunkWorldPos;
         
         if (Vector3.Dot(surfNormal, normal) > 0.5f)
-            normals.Add(surfNormal);
-        else
-            normals.Add(normal);
+            normal = surfNormal;
     }
     
     //http://mathproofs.blogspot.co.uk/2005/07/mapping-cube-to-sphere.html
@@ -81,7 +49,37 @@ public class PlanetEntity : Entity
             p.x * Mathf.Sqrt(1.0f - y2 * 0.5f - z2 * 0.5f + y2 * z2 * 0.33333f),
             p.y * Mathf.Sqrt(1.0f - z2 * 0.5f - x2 * 0.5f + z2 * x2 * 0.33333f),
             p.z * Mathf.Sqrt(1.0f - x2 * 0.5f - y2 * 0.5f + x2 * y2 * 0.33333f)
-            );
+        );
+    }
+
+    public override void InverseTransformVertex(Vector3 pos, Vector3 normal, out Vector3 chunkPos, out Vector3 chunkNormal)
+    {
+        base.InverseTransformVertex(pos, normal, out chunkPos, out chunkNormal);
+
+        Vector3 surfNormal = chunkPos / PlanetScale;
+        
+        //TODO: fix this. Accurate at the surface. Not so much lower down, or above.
+        float height = surfNormal.magnitude;
+        surfNormal = InverseCubize(surfNormal / height) * PlanetScale;
+        
+        chunkPos = (surfNormal * height);// + new Vector3(PlanetScale, PlanetScale, PlanetScale);
+        //Debug.Log(chunkPos.x + ", " + chunkPos.y + ", " + chunkPos.z);
+        
+        int nx = (int)surfNormal.x, ny = (int)surfNormal.y, nz = (int)surfNormal.z;
+        
+        //TODO: this bit doesn't work for sides and backfaces.
+        if (nx == PlanetScale)
+            chunkNormal = Vector3.right;
+        else if (nx == -PlanetScale)
+            chunkNormal = Vector3.left;
+        else if (ny == PlanetScale)
+            chunkNormal = Vector3.up;
+        else if (ny == -PlanetScale)
+            chunkNormal = Vector3.down;
+        else if (nz == PlanetScale)
+            chunkNormal = Vector3.forward;
+        else if (nz == -PlanetScale)
+            chunkNormal = Vector3.back;
     }
     
     //http://stackoverflow.com/questions/2656899/mapping-a-sphere-to-a-cube
