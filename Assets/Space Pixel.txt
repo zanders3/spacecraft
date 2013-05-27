@@ -10,19 +10,19 @@ Entities
 * Voxel sphere generation with gravity.
 
 Blocks
-* Dirt, Iron Ore, Uranium Ore, Copper Ore
-* Fabricator, Nuclear Power Core, Engine, Airlock, Pipe, Wiring, Steel Plating, Steel, Pilot Seat
+* Grass, Dirt, Stone, Iron Ore, Uranium Ore, Copper Ore
+* Fabricator, Nuclear Reactor Core, Ion Drive, Airlock, Pipe, Wiring, Steel Plating, Steel, Pilot Seat
 
 Ships
-* Need a power core and engines connected with pipes.
+* Need a power core and engines connected with pipes. Uranium powers the fuel cells.
 * Need a pilot seat, moves to an overview when sitting in pilot seat. Pilot seat connected to power core with wires.
-* Engines determine speed, don't need to be realistic.
+* Engines determine speed, doesn't need to be realistic.
 
 Fabricator
 * Produces items from ore. Ore is placed inside, you select ship blocks to generate. Gradually generates blocks.
 
 Player
-* Has a spacesuit with jetpack which only works in short bursts but has unlimited fuel. You'll need a ship to break orbit.
+* Has a spacesuit with jetpack which only works in short bursts but has unlimited fuel. You'll need a ship to break orbit. Ships are not affected by gravity?
 
 TODO:
 * Entity with child block generation.
@@ -33,7 +33,4 @@ TODO:
 	* Find base voxel
 	* Compute normal and position of base voxel
 	* Multiply by height
-* BRILLO! :D I got planets working.
-	* Split into 2+ chunks per side.
-	* Load when nearby
-	* Optimise mesh gen.
+* Need to map from planet point to voxel point correctly.

@@ -45,7 +45,7 @@ public class ChunkStore
             int cx, cy, cz;
             int hash = PositionHash(x, y, z, out cx, out cy, out cz);
 
-            Chunk chunk = (Chunk)new GameObject("Chunk").AddComponent<PlanetChunk>();
+            Chunk chunk = (Chunk)new GameObject("Chunk").AddComponent<Chunk>();
             chunk.transform.parent = parentTransform;
             chunk.transform.localPosition = new Vector3(cx * Chunk.BlockSize, cy * Chunk.BlockSize, cz * Chunk.BlockSize);
             chunk.transform.localRotation = Quaternion.identity;

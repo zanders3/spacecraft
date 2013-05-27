@@ -24,12 +24,12 @@ public class Player : MonoBehaviour
         Vector3 up = (transform.position - gravityPosition).normalized;
         rigidbody.rotation = Quaternion.AngleAxis(dy, transform.right) * Quaternion.AngleAxis(dx, up) * Quaternion.LookRotation(transform.forward, up);
 
-        Vector3 movement = transform.TransformDirection(new Vector3(Input.GetAxis("MoveX"), 0.0f, Input.GetAxis("MoveZ"))) * 5.0f;
+       // Vector3 movement = transform.TransformDirection(new Vector3(Input.GetAxis("MoveX"), 0.0f, Input.GetAxis("MoveZ"))) * 5.0f;
+        Vector3 movement = transform.right * Input.GetAxis("MoveX") + Vector3.Cross(transform.right, up) * Input.GetAxis("MoveZ");
 
-        Vector3 velocity = rigidbody.velocity;
         rigidbody.freezeRotation = true;
-        rigidbody.AddForce(movement - velocity * 0.5f, ForceMode.Impulse);
-        rigidbody.AddForce(up * -150.0f);
+        rigidbody.AddForce(movement - rigidbody.velocity * 0.1f, ForceMode.Impulse);
+        rigidbody.AddForce(up * -10.0f);
     }
 
     void Update()
@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
                 targetEntity = chunk.Entity;
 
                 Vector3 normal, localPoint;
-                chunk.InverseTransformVertex(hit.point, hit.normal, out localPoint, out normal);
+                chunk.Entity.InverseTransformVertex(hit.point, hit.normal, out localPoint, out normal);
 
                 targetNormal = normal;
                 localPoint -= normal * 0.5f;

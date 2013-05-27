@@ -10,6 +10,8 @@ public class Entity : MonoBehaviour
     private List<Chunk> chunkUpdates = new List<Chunk>();
     private ChunkStore chunkStore;
 
+    public virtual bool UseMeshCollider { get { return false; } }
+
 	void Start()
 	{
 		chunkStore = new ChunkStore(Material, transform);
@@ -92,4 +94,16 @@ public class Entity : MonoBehaviour
 		else
 			return chunk.GetBlock(x, y, z);
 	}
+
+    public virtual void TransformVertex(Point3D chunkPos, Vector3 pos, Vector3 normal, ref List<Vector3> verts, ref List<Vector3> normals)
+    {
+        verts.Add(pos);
+        normals.Add(normal);
+    }
+
+    public virtual void InverseTransformVertex(Vector3 pos, Vector3 normal, out Vector3 chunkPos, out Vector3 chunkNormal)
+    {
+        chunkPos = transform.InverseTransformPoint(pos);
+        chunkNormal = transform.InverseTransformDirection(normal);
+    }
 }

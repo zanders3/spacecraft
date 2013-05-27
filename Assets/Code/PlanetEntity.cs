@@ -1,30 +1,27 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class PlanetChunk : Chunk
+public class PlanetEntity : Entity
 {
-	public const float PlanetScale = Chunk.BlockSize * 2;
-    Vector3 hitPos = Vector3.zero;
-
-    protected override bool UseMeshCollider { get { return true; } }
+    public const float PlanetScale = Chunk.BlockSize * 2;
+    
+    public override bool UseMeshCollider { get { return true; } }
 
     public override void InverseTransformVertex(Vector3 pos, Vector3 normal, out Vector3 chunkPos, out Vector3 chunkNormal)
     {
-        hitPos = pos;
-
         base.InverseTransformVertex(pos, normal, out chunkPos, out chunkNormal);
-
+        
         Vector3 surfNormal = (chunkPos - new Vector3(PlanetScale, PlanetScale, PlanetScale)) / PlanetScale;
-
+        
         //TODO: fix this. Accurate at the surface. Not so much lower down, or above.
         float height = surfNormal.magnitude;
         surfNormal = InverseCubize(surfNormal / height) * PlanetScale;
-
+        
         chunkPos = (surfNormal * height) + new Vector3(PlanetScale, PlanetScale, PlanetScale);
-        Debug.Log(chunkPos.x + ", " + chunkPos.y + ", " + chunkPos.z);
-
+        //Debug.Log(chunkPos.x + ", " + chunkPos.y + ", " + chunkPos.z);
+        
         int nx = (int)surfNormal.x, ny = (int)surfNormal.y, nz = (int)surfNormal.z;
-
+        
         //TODO: this bit doesn't work for sides and backfaces.
         if (nx == PlanetScale)
             chunkNormal = Vector3.right;
@@ -39,57 +36,57 @@ public class PlanetChunk : Chunk
         else if (nz == -PlanetScale)
             chunkNormal = Vector3.back;
     }
-
-    protected override void TransformVertex(Vector3 pos, Vector3 normal, ref List<Vector3> verts, ref List<Vector3> normals)
+    
+    public override void TransformVertex(Point3D chunkPos, Vector3 pos, Vector3 normal, ref List<Vector3> verts, ref List<Vector3> normals)
     {
-        Vector3 offset = new Vector3(ChunkPos.x * Chunk.BlockSize, ChunkPos.y * Chunk.BlockSize, ChunkPos.z * Chunk.BlockSize);
+        Vector3 offset = new Vector3(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize);
         Vector3 worldPos = pos + offset;
-
+        
         Vector3 surfNormal = (worldPos - new Vector3(PlanetScale, PlanetScale, PlanetScale)) / PlanetScale;
         Vector3 maxDir = new Vector3(Mathf.Abs(surfNormal.x), Mathf.Abs(surfNormal.y), Mathf.Abs(surfNormal.z));
-
+        
         float height = 1.0f;
-        if (ChunkPos.y < 0 || ChunkPos.y > 3)
+        if (chunkPos.y < 0 || chunkPos.y > 3)
         {
             height = surfNormal.y > 0 ? surfNormal.y : -surfNormal.y;
             surfNormal.y = surfNormal.y > 0 ? 1.0f : -1.0f;
         } 
-        else if (ChunkPos.x < 0 || ChunkPos.x > 3)
+        else if (chunkPos.x < 0 || chunkPos.x > 3)
         {
             height = surfNormal.x > 0 ? surfNormal.x : -surfNormal.x;
             surfNormal.x = surfNormal.x > 0 ? 1.0f : -1.0f;
         }
-        else if (ChunkPos.z < 0 || ChunkPos.z > 3)
+        else if (chunkPos.z < 0 || chunkPos.z > 3)
         {
             height = surfNormal.z > 0 ? surfNormal.z : -surfNormal.z;
             surfNormal.z = surfNormal.z > 0 ? 1.0f : -1.0f;
         }
-
+        
         surfNormal = Cubize(surfNormal);
-
+        
         verts.Add((surfNormal * height * PlanetScale) + new Vector3(PlanetScale, PlanetScale, PlanetScale) - offset);
-
+        
         if (Vector3.Dot(surfNormal, normal) > 0.5f)
             normals.Add(surfNormal);
         else
             normals.Add(normal);
     }
-
+    
     //http://mathproofs.blogspot.co.uk/2005/07/mapping-cube-to-sphere.html
     //Maps a 3D cube position [-1,1] to a sphere of radius 1
-	Vector3 Cubize(Vector3 p)
-	{
-		float x2 = p.x * p.x;
-		float y2 = p.y * p.y;
-		float z2 = p.z * p.z;
-		
-		return new Vector3(
-			p.x * Mathf.Sqrt(1.0f - y2 * 0.5f - z2 * 0.5f + y2 * z2 * 0.33333f),
-			p.y * Mathf.Sqrt(1.0f - z2 * 0.5f - x2 * 0.5f + z2 * x2 * 0.33333f),
-			p.z * Mathf.Sqrt(1.0f - x2 * 0.5f - y2 * 0.5f + x2 * y2 * 0.33333f)
-		);
-	}
-
+    Vector3 Cubize(Vector3 p)
+    {
+        float x2 = p.x * p.x;
+        float y2 = p.y * p.y;
+        float z2 = p.z * p.z;
+        
+        return new Vector3(
+            p.x * Mathf.Sqrt(1.0f - y2 * 0.5f - z2 * 0.5f + y2 * z2 * 0.33333f),
+            p.y * Mathf.Sqrt(1.0f - z2 * 0.5f - x2 * 0.5f + z2 * x2 * 0.33333f),
+            p.z * Mathf.Sqrt(1.0f - x2 * 0.5f - y2 * 0.5f + x2 * y2 * 0.33333f)
+            );
+    }
+    
     //http://stackoverflow.com/questions/2656899/mapping-a-sphere-to-a-cube
     //Maps a 3D sphere position to a cube position [-1,1]
     Vector3 InverseCubize(Vector3 position)
@@ -238,14 +235,8 @@ public class PlanetChunk : Chunk
                 position.z = -1.0f;
             }
         }
-
+        
         return position;
     }
-
-    protected override void OnDrawGizmos()
-    {
-        Gizmos.DrawCube(hitPos, Vector3.one * 0.1f);
-
-        base.OnDrawGizmos();
-    }
 }
+

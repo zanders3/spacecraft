@@ -35,14 +35,6 @@ public class Chunk : MonoBehaviour
         get { return transform.parent.GetComponent<Entity>(); }
     }
 
-	protected virtual bool UseMeshCollider { get { return false; } }
-
-    public virtual void InverseTransformVertex(Vector3 pos, Vector3 normal, out Vector3 chunkPos, out Vector3 chunkNormal)
-    {
-        chunkPos = Entity.transform.InverseTransformPoint(pos);
-        chunkNormal = Entity.transform.InverseTransformDirection(normal);
-    }
-
     public Point3D ChunkPos;
 
 	public void SetBlock(BlockType type, int x, int y, int z)
@@ -53,12 +45,6 @@ public class Chunk : MonoBehaviour
 	public BlockType GetBlock(int x, int y, int z)
 	{
 		return blocks[x+1, y+1, z+1];
-	}
-
-	protected virtual void TransformVertex(Vector3 pos, Vector3 normal, ref List<Vector3> verts, ref List<Vector3> normals)
-	{
-		verts.Add(pos);
-		normals.Add(normal);
 	}
 	
     void CopyNeighbourChunk(Point3D minL, Point3D maxL, Point3D offset, Point3D chunkOffset)
@@ -134,7 +120,7 @@ public class Chunk : MonoBehaviour
 
     void UpdateCollision()
     {
-		if (UseMeshCollider)
+		if (Entity.UseMeshCollider)
         {
             MeshCollider collider = GetComponent<MeshCollider>();
             if (collider == null) collider = gameObject.AddComponent<MeshCollider>();
@@ -185,6 +171,7 @@ public class Chunk : MonoBehaviour
 
 	void GenerateMesh(Point3D n, Point3D t, Point3D bn, Point3D o, bool flip, ref List<Vector3> verts, ref List<Vector3> normals, ref List<Vector2> tex, ref List<int> tris)
 	{
+        Entity entity = Entity;
 		Vector3 normal = new Vector3(n.x, n.y, n.z);
 
 		for (int x = 1; x<BlockSize+1; x++)
@@ -208,10 +195,10 @@ public class Chunk : MonoBehaviour
 						}
 
 						int ox = x + o.x - 1, oy = y + o.y - 1, oz = z + o.z - 1;
-						TransformVertex(new Vector3(ox, 		oy, 		 oz), normal, ref verts, ref normals);
-						TransformVertex(new Vector3(ox+t.x,		oy+t.y, 	 oz+t.z), normal, ref verts, ref normals);
-						TransformVertex(new Vector3(ox+bn.x,	oy+bn.y, 	 oz+bn.z), normal, ref verts, ref normals);
-						TransformVertex(new Vector3(ox+t.x+bn.x,oy+t.y+bn.y, oz+t.z+bn.z), normal, ref verts, ref normals);
+						entity.TransformVertex(ChunkPos, new Vector3(ox, 		oy, 		 oz), normal, ref verts, ref normals);
+						entity.TransformVertex(ChunkPos, new Vector3(ox+t.x,		oy+t.y, 	 oz+t.z), normal, ref verts, ref normals);
+						entity.TransformVertex(ChunkPos, new Vector3(ox+bn.x,	oy+bn.y, 	 oz+bn.z), normal, ref verts, ref normals);
+						entity.TransformVertex(ChunkPos, new Vector3(ox+t.x+bn.x,oy+t.y+bn.y, oz+t.z+bn.z), normal, ref verts, ref normals);
 
 						tex.Add(new Vector2(0.0f, 0.0f));
 						tex.Add(new Vector2(1.0f, 0.0f));
@@ -223,7 +210,7 @@ public class Chunk : MonoBehaviour
 		}
 	}
 
-	protected virtual void OnDrawGizmos()
+	void OnDrawGizmos()
 	{
 		Gizmos.matrix = transform.localToWorldMatrix;
 		Gizmos.DrawWireCube(
