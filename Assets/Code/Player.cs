@@ -3,8 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : MonoBehaviour
 {
-    float rotX, rotY;
-
     Entity targetEntity = null;
     Point3D targetIndex, targetPlaceIndex;
     Vector3 targetNormal;
@@ -20,24 +18,18 @@ public class Player : MonoBehaviour
 
     void UpdatePlayerPosition()
     {
-        //THIS PROJECT IS FULL OF MATHS AAARRGH
-        rotX += Input.GetAxis("LookX");
-        rotY -= Input.GetAxis("LookY");
+        float dx = Input.GetAxis("LookX");
+        float dy = -Input.GetAxis("LookY");
 
         Vector3 up = (transform.position - gravityPosition).normalized;
-        Vector3 right = up != Vector3.up ? Vector3.Cross(Vector3.up, up) : Vector3.right;
+        rigidbody.rotation = Quaternion.AngleAxis(dy, transform.right) * Quaternion.AngleAxis(dx, up) * Quaternion.LookRotation(transform.forward, up);
 
-        Vector3 gravity = up * -9.8f;
         Vector3 movement = transform.TransformDirection(new Vector3(Input.GetAxis("MoveX"), 0.0f, Input.GetAxis("MoveZ"))) * 5.0f;
 
         Vector3 velocity = rigidbody.velocity;
-        //float speedDueToGravity = Vector3.Dot(gravity.normalized, velocity);
-        //velocity -= velocity.normalized * speedDueToGravity;
-
-        rigidbody.rotation = Quaternion.AngleAxis(rotX, up) * Quaternion.AngleAxis(rotY, right);
         rigidbody.freezeRotation = true;
         rigidbody.AddForce(movement - velocity * 0.5f, ForceMode.Impulse);
-        rigidbody.AddForce(gravity);
+        rigidbody.AddForce(up * -150.0f);
     }
 
     void Update()
