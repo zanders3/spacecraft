@@ -109,9 +109,8 @@ public class Entity : MonoBehaviour
     {
     }
 
-    public virtual void InverseTransformVertex(Vector3 pos, Vector3 normal, out Vector3 chunkPos, out Vector3 chunkNormal)
+    public virtual Vector3 InverseTransformVertex(Vector3 pos)
     {
-        chunkPos = transform.InverseTransformPoint(pos);
-        chunkNormal = transform.InverseTransformDirection(normal);
+        return transform.InverseTransformPoint(pos);
     }
 }

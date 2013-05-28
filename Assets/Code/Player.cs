@@ -65,17 +65,15 @@ public class Player : MonoBehaviour
 
             if (chunk != null)
             {
-                targetEntity = chunk.Entity;
-
-                Vector3 normal, localPoint;
-                hitPos = hit.point;
-                chunk.Entity.InverseTransformVertex(hit.point, hit.normal, out localPoint, out normal);
-
                 targetNormal = hit.normal;
-                //TODO: better handling of normals for placement
+                targetEntity = chunk.Entity;
+                hitPos = hit.point;
+
+                Vector3 localPoint = chunk.Entity.InverseTransformVertex(hit.point + hit.normal * -0.5f);
+                Vector3 localPlacePoint = chunk.Entity.InverseTransformVertex(hitPos + hit.normal * 0.5f);
 
                 targetIndex = new Point3D(Mathf.FloorToInt(localPoint.x), Mathf.FloorToInt(localPoint.y), Mathf.FloorToInt(localPoint.z));
-                targetPlaceIndex = new Point3D(targetIndex.x + (int)normal.x, targetIndex.y + (int)normal.y, targetIndex.z + (int)normal.z);
+                targetPlaceIndex = new Point3D(Mathf.FloorToInt(localPlacePoint.x), Mathf.FloorToInt(localPlacePoint.y), Mathf.FloorToInt(localPlacePoint.z));
 
                 if (!mouseDown)
                 {
