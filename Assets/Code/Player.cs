@@ -17,6 +17,12 @@ public class Player : MonoBehaviour
     Vector3 targetNormal;
     Vector3 hitPos;
 
+    Vector3 gravityPosition = Vector3.zero;
+    Vector3 up = Vector3.up, right = Vector3.right, forward = Vector3.forward;
+    bool isColliding = false;
+
+    float jetpackFuel = 1.0f;
+
     bool mouseDown = false;
 
     void Start()
@@ -25,8 +31,25 @@ public class Player : MonoBehaviour
         Screen.lockCursor = true;
     }
 
-    Vector3 gravityPosition = Vector3.zero;
-    Vector3 up = Vector3.up, right = Vector3.right, forward = Vector3.forward;
+    void OnCollisionStay()
+    {
+        isColliding = true;
+    }
+
+    void DrawQuad(Rect position, Color color) 
+    {
+        Texture2D texture = new Texture2D(1, 1);
+        texture.SetPixel(0,0,color);
+        texture.Apply();
+        GUI.skin.box.normal.background = texture;
+        GUI.Box(position, GUIContent.none);
+    }
+
+    void OnGUI()
+    {
+        DrawQuad(new Rect(10.0f, Screen.height - 40.0f, Screen.width - 20.0f, 30.0f), new Color(0.6f, 0.6f, 0.0f));
+        DrawQuad(new Rect(10.0f, Screen.height - 40.0f, (Screen.width - 20.0f) * jetpackFuel, 30.0f), Color.yellow);
+    }
 
     void UpdatePlayerPosition()
     {
@@ -36,7 +59,7 @@ public class Player : MonoBehaviour
         if (playerMovement == PlayerMovement.Planet)
         {
             up = (transform.position - gravityPosition).normalized;
-            rigidbody.AddForce(up * -20.0f);
+            rigidbody.AddForce(up * -10.0f);
         }
 
         right = Head.transform.right;
@@ -47,8 +70,38 @@ public class Player : MonoBehaviour
         Head.transform.position = rigidbody.transform.position;
 
         Vector3 forwardMoveVector = playerMovement == PlayerMovement.Planet ? Vector3.Cross(right, up) : forward;
-        Vector3 movement = right * Input.GetAxis("MoveX") + forwardMoveVector * Input.GetAxis("MoveZ");
-        rigidbody.AddForce(movement - rigidbody.velocity * 0.1f, ForceMode.Impulse);
+
+        Vector2 moveAxis = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("MoveX"), Input.GetAxis("MoveZ")), 1.0f);
+        Vector3 movement = right * moveAxis.x + forwardMoveVector * moveAxis.y;
+
+        if (isColliding)
+        {
+            Vector3 drag = rigidbody.velocity - (Vector3.Dot(up, rigidbody.velocity) * up);
+            isColliding = false;
+
+            rigidbody.AddForce(movement - drag * 0.2f, ForceMode.Impulse);
+        }
+        else if (playerMovement == PlayerMovement.Space)
+        {
+            rigidbody.AddForce(movement - rigidbody.velocity * 0.2f);
+        }
+        else
+        {
+            rigidbody.AddForce(movement);
+        }
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (jetpackFuel > 0.0f)
+            {
+                jetpackFuel = Mathf.Max(jetpackFuel - Time.deltaTime * 2.0f, 0.0f);
+                rigidbody.AddForce(up * (isColliding ? 1000.0f : 20.0f));
+            }
+        }
+        else if (jetpackFuel < 1.0f - Time.deltaTime)
+            jetpackFuel += Time.deltaTime * 0.5f;
+        else
+            jetpackFuel = 1.0f;
     }
 
     void Update()
@@ -91,12 +144,7 @@ public class Player : MonoBehaviour
             }  
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !mouseDown)
-        {
-            mouseDown = true;
-            playerMovement = playerMovement == PlayerMovement.Planet ? PlayerMovement.Space : PlayerMovement.Planet;
-        }
-        else if (!Input.GetButton("Place") && !Input.GetButton("Remove"))
+        if (!Input.GetButton("Place") && !Input.GetButton("Remove"))
             mouseDown = false;
     }
 

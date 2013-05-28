@@ -206,6 +206,8 @@ public class Chunk : MonoBehaviour
                         if (Vector3.Dot(faceNormal, normal) < 0.0f)
                             faceNormal = -faceNormal;
 
+                        faceNormal = transform.InverseTransformDirection(faceNormal);
+
                         normals.Add(faceNormal);
                         normals.Add(faceNormal);
                         normals.Add(faceNormal);

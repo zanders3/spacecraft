@@ -134,7 +134,8 @@ public class PlanetEntity : Entity
             {
                 // top face
                 position.y = 1.0f;
-            } else
+            } 
+            else
             {
                 // bottom face
                 position.y = -1.0f;
@@ -233,4 +234,3 @@ public class PlanetEntity : Entity
         return position;
     }
 }
-
