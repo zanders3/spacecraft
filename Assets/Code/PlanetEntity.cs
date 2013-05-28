@@ -32,9 +32,8 @@ public class PlanetEntity : Entity
         surfNormal = Cubize(surfNormal);
         
         pos = (surfNormal * height * PlanetScale) - chunkWorldPos;
-        
-        if (Vector3.Dot(surfNormal, normal) > 0.5f)
-            normal = surfNormal;
+
+        normal = surfNormal;
     }
     
     //http://mathproofs.blogspot.co.uk/2005/07/mapping-cube-to-sphere.html
@@ -52,6 +51,8 @@ public class PlanetEntity : Entity
         );
     }
 
+    Vector3 sphereSurfPos;
+
     public override void InverseTransformVertex(Vector3 pos, Vector3 normal, out Vector3 chunkPos, out Vector3 chunkNormal)
     {
         base.InverseTransformVertex(pos, normal, out chunkPos, out chunkNormal);
@@ -60,10 +61,25 @@ public class PlanetEntity : Entity
         
         //TODO: fix this. Accurate at the surface. Not so much lower down, or above.
         float height = surfNormal.magnitude;
+
         surfNormal = InverseCubize(surfNormal / height) * PlanetScale;
-        
-        chunkPos = (surfNormal * height);// + new Vector3(PlanetScale, PlanetScale, PlanetScale);
-        //Debug.Log(chunkPos.x + ", " + chunkPos.y + ", " + chunkPos.z);
+        chunkPos = surfNormal;
+
+        height = (height * PlanetScale) - PlanetScale;
+        Debug.Log(height);
+        Vector3 anyDir = new Vector3(Mathf.Abs(surfNormal.x), Mathf.Abs(surfNormal.y), Mathf.Abs(surfNormal.z));
+        if (anyDir.y > anyDir.x && anyDir.y > anyDir.z)
+        {
+            chunkPos.y += surfNormal.y > 0.0f ? height : -height;
+        }
+        else if (anyDir.x > anyDir.y && anyDir.x > anyDir.z)
+        {
+            chunkPos.x += surfNormal.x > 0.0f ? height : -height;
+        }
+        else
+        {
+            chunkPos.z += surfNormal.z > 0.0f ? height : -height;
+        }
         
         int nx = (int)surfNormal.x, ny = (int)surfNormal.y, nz = (int)surfNormal.z;
         
@@ -87,9 +103,9 @@ public class PlanetEntity : Entity
     Vector3 InverseCubize(Vector3 position)
     {
         double x, y, z;
-        x = (float)position.x;
-        y = (float)position.y;
-        z = (float)position.z;
+        x = position.x;
+        y = position.y;
+        z = position.z;
         
         double fx, fy, fz;
         fx = System.Math.Abs(x);
