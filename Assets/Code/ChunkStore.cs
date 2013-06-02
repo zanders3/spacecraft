@@ -5,10 +5,11 @@ using System.Collections.Generic;
 
 public class ChunkStore
 {
-    public ChunkStore(Material material, Transform parentTransform)
+    public ChunkStore(IChunkGenerator generator, Material material, Transform parentTransform)
     {
         this.material = material;
         this.parentTransform = parentTransform;
+        this.generator = generator;
     }
     
     public const int MaxChunks = 512;
@@ -16,6 +17,7 @@ public class ChunkStore
     Transform parentTransform;
     Material material;
     Dictionary<int, Chunk> chunks = new Dictionary<int, Chunk>();
+    IChunkGenerator generator;
 
     static int PositionHash(int x, int y, int z, out int cx, out int cy, out int cz)
     {
@@ -51,6 +53,7 @@ public class ChunkStore
             chunk.transform.localRotation = Quaternion.identity;
             chunk.renderer.sharedMaterial = material;
             chunk.ChunkPos = new Point3D(cx, cy, cz);
+            chunk.Generate(generator);
             chunks.Add(hash, chunk);
             return chunk;
         } 

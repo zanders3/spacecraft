@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// A non moving Entity that represents a planet.
+/// </summary>
 public class PlanetEntity : Entity
 {
-    public const float PlanetScale = Chunk.BlockSize;
+    public float PlanetScale { get { return Chunk.BlockSize; } }
     
     public override bool UseMeshCollider { get { return true; } }
 

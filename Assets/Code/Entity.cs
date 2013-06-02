@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-//Represents a group of voxel chunks. A single entity is for example a planet. Chunks can move relative to each other, and collide etc.
+/// <summary>
+/// Represents a group of voxel chunks. A single entity is for example a planet. Chunks can move relative to each other and collide etc.
+/// </summary>
 public class Entity : MonoBehaviour
 {
     public Material Material;
@@ -14,7 +16,7 @@ public class Entity : MonoBehaviour
 
 	void Start()
 	{
-		chunkStore = new ChunkStore(Material, transform);
+		chunkStore = new ChunkStore(new FillGenerator(BlockType.Dirt), Material, transform);
 
         /*int min = 0, max = 4;//-4, max = 8;
 

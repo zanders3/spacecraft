@@ -6,6 +6,11 @@ Space Pixel
 - Explore a voxel asteroid field galaxy thing also with planets and gravity on them.
 - Basically minecraft with mining for important minerals with a space theme.
 
+Entity Hierarchy
+* Galaxy -> Solar System -> Planets
+* Load/unload solar system when far away.
+* Load/unload planet when far away (replace with simple sphere).
+
 Entities
 * Voxel sphere generation with gravity.
 
@@ -22,15 +27,20 @@ Fabricator
 * Produces items from ore. Ore is placed inside, you select ship blocks to generate. Gradually generates blocks.
 
 Player
-* Has a spacesuit with jetpack which only works in short bursts but has unlimited fuel. You'll need a ship to break orbit. Ships are not affected by gravity?
+* Has a spacesuit with jetpack which only works in short bursts but has unlimited fuel. You'll need a ship to break orbit, but they are also affected by gravity.
 
 TODO:
-* Entity with child block generation.
-* Entities can be fixed or can move. All have a voxel grid relative to themselves.
 
-* Chunk streaming to/from disk/generator according to distance???
-* Planet CHUNKS that gradually curve around (D: how hard is this to do w/ a depth limit?)
-	* Find base voxel
-	* Compute normal and position of base voxel
-	* Multiply by height
 * Need to map from planet point to voxel point correctly.
+* Add player jet pack
+* Planet surface generation w/ multiple radii (1, 2, 4, 8 ???)
+	* Add support for multiple block types
+	* Gonna need voxel streaming to/from disk for large planets (UUUUGGGHHH)
+	* 3D height noise
+* Ship creation
+	* Reactor core
+	* Pilot seat
+	* Engine
+* Investigate voxel chipping (solid, wedge x 12 rotations, corner x 8)
+	* Mining rules: solid -> wedge x 2 -> corner x 2
+	* Nearest edge is chipped away.

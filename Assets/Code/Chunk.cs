@@ -39,6 +39,15 @@ public class Chunk : MonoBehaviour
 
     public Point3D ChunkPos;
 
+    public void Generate(IChunkGenerator generator)
+    {
+        BlockType[,,] generatedBlocks = generator.Generate(ChunkPos);
+        for (int x = 0; x<BlockSize; x++)
+            for (int y = 0; y<BlockSize; y++)
+                for (int z = 0; z<BlockSize; z++)
+                    blocks[x + 1, y + 1, z + 1] = generatedBlocks[x, y, z];
+    }
+
 	public void SetBlock(BlockType type, int x, int y, int z)
 	{
 		blocks[x+1, y+1, z+1] = type;
