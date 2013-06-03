@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
 
     public Transform Head;
 
-    PlayerMovement playerMovement = PlayerMovement.Planet;
+    PlayerMovement playerMovement = PlayerMovement.Space;
     Entity targetEntity = null;
     Point3D targetIndex, targetPlaceIndex;
     Vector3 targetNormal;
@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
         }
         else if (playerMovement == PlayerMovement.Space)
         {
-            rigidbody.AddForce(movement - rigidbody.velocity * 0.2f);
+            rigidbody.AddForce(movement - rigidbody.velocity * 0.2f, ForceMode.Impulse);
         }
         else
         {

@@ -5,9 +5,11 @@ public class PlanetGenerator : IChunkGenerator
     private int radius;
     private PlanetEntity planet;
     private FillGenerator fillGenerator;
+    private SimplexNoiseGenerator noiseGen;
 
     public PlanetGenerator(int radius, PlanetEntity planet)
     {
+        this.noiseGen = new SimplexNoiseGenerator();
         this.radius = radius;
         this.planet = planet;
         this.fillGenerator = new FillGenerator(BlockType.Dirt);
@@ -41,8 +43,9 @@ public class PlanetGenerator : IChunkGenerator
                 {
                     Vector3 pos = new Vector3(x, y, z);
                     planet.TransformVertex(chunkPos, ref pos);  
-                pos *= 0.1f;
-                    float noise = Noise.Generate(pos.x, pos.y, pos.z);
+                    //float height = (pos.magnitude * 0.1f) - 1.0f;
+                    pos = (pos * 0.1f) + new Vector3(30000.0f, 30000.0f, 30000.0f);
+                    float noise = noiseGen.noise(pos.x, pos.y, pos.z);
                     blocks[x,y,z] = noise > 0.0f ? BlockType.Dirt : BlockType.Empty;
                 }
 
