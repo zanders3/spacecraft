@@ -158,16 +158,15 @@ public class Player : MonoBehaviour
         Vector3 fTR = fTL + Vector3.right;
         Vector3 fBL = fTL + Vector3.up;
         Vector3 fBR = fBL + Vector3.right;
-        
-        Vector3 normal = Vector3.up;
-        targetEntity.TransformVertex(Point3D.Zero, ref tL, ref normal);
-        targetEntity.TransformVertex(Point3D.Zero, ref tR, ref normal);
-        targetEntity.TransformVertex(Point3D.Zero, ref bL, ref normal);
-        targetEntity.TransformVertex(Point3D.Zero, ref bR, ref normal);
-        targetEntity.TransformVertex(Point3D.Zero, ref fTL, ref normal);
-        targetEntity.TransformVertex(Point3D.Zero, ref fTR, ref normal);
-        targetEntity.TransformVertex(Point3D.Zero, ref fBL, ref normal);
-        targetEntity.TransformVertex(Point3D.Zero, ref fBR, ref normal);
+
+        targetEntity.TransformVertex(Point3D.Zero, ref tL);
+        targetEntity.TransformVertex(Point3D.Zero, ref tR);
+        targetEntity.TransformVertex(Point3D.Zero, ref bL);
+        targetEntity.TransformVertex(Point3D.Zero, ref bR);
+        targetEntity.TransformVertex(Point3D.Zero, ref fTL);
+        targetEntity.TransformVertex(Point3D.Zero, ref fTR);
+        targetEntity.TransformVertex(Point3D.Zero, ref fBL);
+        targetEntity.TransformVertex(Point3D.Zero, ref fBR);
         
         Gizmos.DrawLine(tL, tR);
         Gizmos.DrawLine(tR, bR);

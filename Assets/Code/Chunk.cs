@@ -234,8 +234,7 @@ public class Chunk : MonoBehaviour
 
     void AddVertex(Point3D chunkPos, Vector3 pos, ref List<Vector3> verts, out Vector3 oPos)
     {
-        Vector3 normal = Vector3.zero;
-        Entity.TransformVertex(chunkPos, ref pos, ref normal);
+        Entity.TransformVertex(chunkPos, ref pos);
         oPos = pos;
         verts.Add(pos);
     }

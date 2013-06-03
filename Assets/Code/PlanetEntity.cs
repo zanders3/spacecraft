@@ -10,7 +10,12 @@ public class PlanetEntity : Entity
     
     public override bool UseMeshCollider { get { return true; } }
 
-    public override void TransformVertex(Point3D chunkPos, ref Vector3 pos, ref Vector3 normal)
+    protected override IChunkGenerator CreateGenerator()
+    {
+        return new PlanetGenerator(1, this);
+    }
+
+    public override void TransformVertex(Point3D chunkPos, ref Vector3 pos)
     {
         Vector3 chunkWorldPos = new Vector3(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize);
         Vector3 surfNormal = (pos + chunkWorldPos) / PlanetScale;
@@ -35,8 +40,6 @@ public class PlanetEntity : Entity
         surfNormal = Cubize(surfNormal);
         
         pos = (surfNormal * height * PlanetScale) - chunkWorldPos;
-
-        normal = surfNormal;
     }
     
     //http://mathproofs.blogspot.co.uk/2005/07/mapping-cube-to-sphere.html

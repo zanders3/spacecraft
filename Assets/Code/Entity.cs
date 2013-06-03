@@ -14,9 +14,14 @@ public class Entity : MonoBehaviour
 
     public virtual bool UseMeshCollider { get { return true; } }
 
+    protected virtual IChunkGenerator CreateGenerator()
+    {
+        return new FillGenerator(BlockType.Empty);
+    }
+
 	void Start()
 	{
-		chunkStore = new ChunkStore(new FillGenerator(BlockType.Dirt), Material, transform);
+		chunkStore = new ChunkStore(CreateGenerator(), Material, transform);
 
         /*int min = 0, max = 4;//-4, max = 8;
 
@@ -107,7 +112,7 @@ public class Entity : MonoBehaviour
 			return chunk.GetBlock(x, y, z);
 	}
 
-    public virtual void TransformVertex(Point3D chunkPos, ref Vector3 pos, ref Vector3 normal)
+    public virtual void TransformVertex(Point3D chunkPos, ref Vector3 pos)
     {
     }
 
