@@ -15,37 +15,52 @@ public class PlanetGenerator : IChunkGenerator
         this.fillGenerator = new FillGenerator(BlockType.Dirt);
     }
 
+    private float Lookup(Vector3 pos)
+    {
+        planet.TransformVertex(Point3D.Zero, ref pos);
+
+        pos = pos * 0.1f + new Vector3(30000.0f, 30000.0f, 30000.0f);
+        return noiseGen.noise(pos.x, pos.y, pos.z);
+    }
+
+    //http://paulbourke.net/miscellaneous/interpolation/
+    float TrilinearInterpolate(float x, float y, float z, float v000, float v100, float v010, float v001, float v101, float v011, float v110, float v111)
+    {
+        float ix = 1.0f - x, iy = 1.0f - y, iz = 1.0f - z;
+        return 
+            (v000 * ix * iy * iz) +
+            (v100 * x * iy * iz) +
+            (v010 * ix * y * iz) +
+            (v001 * ix * iy * z) +
+            (v101 * x * iy * z) +
+            (v011 * ix * y * z) +
+            (v110 * x * y * iz) +
+            (v111 * x * y * z);///WTFFFFFFF
+    }
+
     public BlockType[,,] Generate(Point3D chunkPos)
     {
         BlockType[,,] blocks = new BlockType[Chunk.BlockSize, Chunk.BlockSize, Chunk.BlockSize];
-        
-        /*Vector3 tL = new Vector3(chunkPos.x, chunkPos.y, chunkPos.z);
-            Vector3 tR = tL + Vector3.right;
-            Vector3 bL = tL + Vector3.up;
-            Vector3 bR = bL + Vector3.right;
-            Vector3 fTL = tL + Vector3.forward;
-            Vector3 fTR = fTL + Vector3.right;
-            Vector3 fBL = fTL + Vector3.up;
-            Vector3 fBR = fBL + Vector3.right;
-            
-            planet.TransformVertex(Point3D.Zero, ref tL);
-            planet.TransformVertex(Point3D.Zero, ref tR);
-            planet.TransformVertex(Point3D.Zero, ref bL);
-            planet.TransformVertex(Point3D.Zero, ref bR);
-            planet.TransformVertex(Point3D.Zero, ref fTL);
-            planet.TransformVertex(Point3D.Zero, ref fTR);
-            planet.TransformVertex(Point3D.Zero, ref fBL);
-            planet.TransformVertex(Point3D.Zero, ref fBR);*/
 
+        Vector3 p = new Vector3(chunkPos.x, chunkPos.y, chunkPos.z);
+        float v000 = Lookup(p);
+        float v100 = Lookup(p + new Vector3(1.0f, 0.0f, 0.0f));
+        float v010 = Lookup(p + new Vector3(0.0f, 1.0f, 0.0f));
+        float v001 = Lookup(p + new Vector3(0.0f, 0.0f, 1.0f));
+        float v101 = Lookup(p + new Vector3(1.0f, 0.0f, 1.0f));
+        float v011 = Lookup(p + new Vector3(0.0f, 1.0f, 1.0f));
+        float v110 = Lookup(p + new Vector3(1.0f, 1.0f, 0.0f));
+        float v111 = Lookup(p + new Vector3(1.0f, 1.0f, 1.0f));
+
+        float invBlockSize = 1.0f / Chunk.BlockSize;
         for (int x = 0; x < Chunk.BlockSize; x++)
             for (int y = 0; y < Chunk.BlockSize; y++)
                 for (int z = 0; z < Chunk.BlockSize; z++)
                 {
-                    Vector3 pos = new Vector3(x, y, z);
-                    planet.TransformVertex(chunkPos, ref pos);  
-                    //float height = (pos.magnitude * 0.1f) - 1.0f;
-                    pos = (pos * 0.1f) + new Vector3(30000.0f, 30000.0f, 30000.0f);
-                    float noise = noiseGen.noise(pos.x, pos.y, pos.z);
+                    float noise = TrilinearInterpolate(
+                        x * invBlockSize, y * invBlockSize, z * invBlockSize,
+                        v000, v100, v010, v001, v101, v011, v110, v111);
+
                     blocks[x,y,z] = noise > 0.0f ? BlockType.Dirt : BlockType.Empty;
                 }
 
