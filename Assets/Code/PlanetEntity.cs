@@ -54,12 +54,13 @@ public class PlanetEntity : Entity
             height = surfNormal.z > 0 ? surfNormal.z : -surfNormal.z;
             surfNormal.z = surfNormal.z > 0 ? 1.0f : -1.0f;
         }
-        
+
+        //surf normal at this point represents a point within the unit sphere. 
+        //Height goes above 0 above the unit sphere to extrude above the surface.
         surfNormal = Cubize(surfNormal);
-        
-        pos = (surfNormal * height * PlanetScale) - chunkWorldPos;
+        pos = (surfNormal * height * height * PlanetScale) - chunkWorldPos;
     }
-    
+
     //http://mathproofs.blogspot.co.uk/2005/07/mapping-cube-to-sphere.html
     //Maps a 3D cube position [-1,1] to a sphere of radius 1
     Vector3 Cubize(Vector3 p)
@@ -86,8 +87,8 @@ public class PlanetEntity : Entity
         surfNormal = InverseCubize(surfNormal / height) * PlanetScale;
         position = surfNormal;
         
-        height = (height * PlanetScale) - PlanetScale;
-        
+        height = (Mathf.Sqrt(height) * PlanetScale) - PlanetScale;
+
         Vector3 anyDir = new Vector3(Mathf.Abs(surfNormal.x), Mathf.Abs(surfNormal.y), Mathf.Abs(surfNormal.z));
         if (anyDir.y > anyDir.x && anyDir.y > anyDir.z)
         {
