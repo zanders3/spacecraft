@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
         }
         else if (playerMovement == PlayerMovement.Space)
         {
-            rigidbody.AddForce(movement - rigidbody.velocity * 0.2f, ForceMode.Impulse);
+            rigidbody.AddForce(movement * 10.0f - rigidbody.velocity * 0.2f, ForceMode.Impulse);
         }
         else
         {

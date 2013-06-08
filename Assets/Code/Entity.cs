@@ -16,39 +16,21 @@ public class Entity : MonoBehaviour
 
     protected virtual IChunkGenerator CreateGenerator()
     {
-        return new FillGenerator(BlockType.Empty);
+        return new PlanetGenerator(1, this);
+    }
+
+    protected virtual List<Point3D> InitialiseBlocks()
+    {
+        return new List<Point3D>();
     }
 
 	void Start()
 	{
 		chunkStore = new ChunkStore(CreateGenerator(), Material, transform);
-
-        /*int min = 0, max = 4;//-4, max = 8;
-
-        for (int x = min; x<max; x++)
-            for (int y = 0; y<4; y++)
-                for (int z = 0; z<4; z++)
-                    chunkUpdates.Add(chunkStore.Add(x * Chunk.BlockSize, y * Chunk.BlockSize, z * Chunk.BlockSize));
-        for (int y = min; y<max; y++)
-            if (y < 0 || y > 3)
-                for (int x = 0; x<4; x++)
-                    for (int z = 0; z<4; z++)
-                        chunkUpdates.Add(chunkStore.Add(x * Chunk.BlockSize, y * Chunk.BlockSize, z * Chunk.BlockSize));
-        for (int z = min; z<max; z++)
-            if (z < 0 || z > 3)
-                for (int x = 0; x<4; x++)
-                    for (int y = 0; y<4; y++)
-                        chunkUpdates.Add(chunkStore.Add(x * Chunk.BlockSize, y * Chunk.BlockSize, z * Chunk.BlockSize));*/
-        chunkUpdates.Add(chunkStore.Add(0, 0, 0));
-        chunkUpdates.Add(chunkStore.Add(-1, 0, 0));
-        chunkUpdates.Add(chunkStore.Add(0, -1, 0));
-        chunkUpdates.Add(chunkStore.Add(0, 0, -1));
-        chunkUpdates.Add(chunkStore.Add(-1, 0, -1));
-        chunkUpdates.Add(chunkStore.Add(-1, -1, 0));
-        chunkUpdates.Add(chunkStore.Add(0, -1, -1));
-        chunkUpdates.Add(chunkStore.Add(-1, -1, -1));
-
-        chunkUpdates.Add(chunkStore.Add(0, 8, 0));
+        foreach (Point3D pos in InitialiseBlocks())
+        {
+            chunkUpdates.Add(chunkStore.Add(pos.x * Chunk.BlockSize, pos.y * Chunk.BlockSize, pos.z * Chunk.BlockSize));
+        }
 	}
 
     void Update()

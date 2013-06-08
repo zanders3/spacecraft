@@ -6,6 +6,7 @@ using System.Collections.Generic;
 /// </summary>
 public class PlanetEntity : Entity
 {
+    int planetScale = 1;
     public float PlanetScale { get { return Chunk.BlockSize; } }
     
     public override bool UseMeshCollider { get { return true; } }
@@ -13,6 +14,23 @@ public class PlanetEntity : Entity
     protected override IChunkGenerator CreateGenerator()
     {
         return new PlanetGenerator(1, this);
+    }
+
+    protected override List<Point3D> InitialiseBlocks()
+    {
+        List<Point3D> blocks = new List<Point3D>();
+        for (int x = -planetScale*3; x<planetScale*3; x++)
+            for (int y = -planetScale*3; y<planetScale*3; y++)
+                for (int z = -planetScale*3; z<planetScale*3; z++)
+                {
+                    int xOut = x >= planetScale || x < -planetScale ? 1 : 0;
+                    int yOut = y >= planetScale || y < -planetScale ? 1 : 0;
+                    int zOut = z >= planetScale || z < -planetScale ? 1 : 0;
+                    if ((xOut + yOut + zOut) <= 1)
+                        blocks.Add(new Point3D(x, y, z));
+                }
+
+        return blocks;
     }
 
     public override void TransformVertex(Point3D chunkPos, ref Vector3 pos)

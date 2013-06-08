@@ -2,25 +2,24 @@ using UnityEngine;
 
 public class PlanetGenerator : IChunkGenerator
 {
-    private int radius;
-    private PlanetEntity planet;
-    private FillGenerator fillGenerator;
+    private Entity planet;
     private SimplexNoiseGenerator noiseGen;
 
-    public PlanetGenerator(int radius, PlanetEntity planet)
+    public PlanetGenerator(int radius, Entity planet)
     {
         this.noiseGen = new SimplexNoiseGenerator();
-        this.radius = radius;
         this.planet = planet;
-        this.fillGenerator = new FillGenerator(BlockType.Dirt);
     }
 
     private float Lookup(Vector3 pos)
     {
         planet.TransformVertex(Point3D.Zero, ref pos);
 
-        pos = pos * 0.1f + new Vector3(30000.0f, 30000.0f, 30000.0f);
-        return noiseGen.noise(pos.x, pos.y, pos.z);
+        float dist = pos.magnitude;
+        pos = pos * Chunk.BlockSize;
+        pos += new Vector3(30000.0f, 30000.0f, 30000.0f);
+
+        return /*noiseGen.noise(pos.x, pos.y, pos.z) +*/ 3.0f - dist;
     }
 
     //http://paulbourke.net/miscellaneous/interpolation/
@@ -35,7 +34,7 @@ public class PlanetGenerator : IChunkGenerator
             (v101 * x * iy * z) +
             (v011 * ix * y * z) +
             (v110 * x * y * iz) +
-            (v111 * x * y * z);///WTFFFFFFF
+            (v111 * x * y * z);
     }
 
     public BlockType[,,] Generate(Point3D chunkPos)
