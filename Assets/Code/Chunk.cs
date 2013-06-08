@@ -2,15 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-public enum BlockType
-{
-    Dirt,
-	Empty,
-	IronOre,
-	UraniumOre,
-	CopperOre
-}
-
 public struct Point3D
 {
     public static Point3D Zero { get { return new Point3D(0, 0, 0); } }
@@ -31,6 +22,7 @@ public class Chunk : MonoBehaviour
 {
 	public const int BlockSize = 8;
 	BlockType[,,] blocks = new BlockType[BlockSize+2, BlockSize+2, BlockSize+2];
+    ChunkTextureMapper textureMapper = new ChunkTextureMapper();
 
     public Entity Entity
     {
@@ -222,10 +214,7 @@ public class Chunk : MonoBehaviour
                         normals.Add(faceNormal);
                         normals.Add(faceNormal);
 
-						tex.Add(new Vector2(0.0f, 0.0f));
-						tex.Add(new Vector2(1.0f, 0.0f));
-						tex.Add(new Vector2(0.0f, 1.0f));
-						tex.Add(new Vector2(1.0f, 1.0f));
+                        textureMapper.MapTexture(blocks[x, y, z], ref tex);
 					}
 				}
 			}

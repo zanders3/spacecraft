@@ -44,8 +44,10 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Code\Blocks.cs" />
      <Compile Include="Assets\Code\Chunk.cs" />
      <Compile Include="Assets\Code\ChunkStore.cs" />
+     <Compile Include="Assets\Code\ChunkTextureMapper.cs" />
      <Compile Include="Assets\Code\Entity.cs" />
      <Compile Include="Assets\Code\Generators\FillGenerator.cs" />
      <Compile Include="Assets\Code\Generators\IChunkGenerator.cs" />
