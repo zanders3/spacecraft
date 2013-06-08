@@ -211,7 +211,7 @@ public class Chunk : MonoBehaviour
 						AddVertex(ChunkPos, new Vector3(ox+bn.x,	oy+bn.y, 	 oz+bn.z), ref verts, out posC);
 						AddVertex(ChunkPos, new Vector3(ox+t.x+bn.x,oy+t.y+bn.y, oz+t.z+bn.z), ref verts, out posD);
 
-                        Vector3 faceNormal = Vector3.Cross((posC - posA), (posB - posA)).normalized;
+                        Vector3 faceNormal = Vector3.Cross((posA - posB), (posA - posC)).normalized;
                         if (Vector3.Dot(faceNormal, normal) < 0.0f)
                             faceNormal = -faceNormal;
 

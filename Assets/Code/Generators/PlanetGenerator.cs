@@ -13,13 +13,20 @@ public class PlanetGenerator : IChunkGenerator
 
     private float Lookup(Vector3 pos)
     {
+        float height = 1.0f;
+        if (Mathf.Abs(pos.y) > 1.0f)
+            height = pos.y > 0 ? pos.y : -pos.y;
+        else if (Mathf.Abs(pos.x) > 1.0f)
+            height = pos.x > 0 ? pos.x : -pos.x;
+        else if (Mathf.Abs(pos.z) > 1.0f)
+            height = pos.z > 0 ? pos.z : -pos.z;
+
         planet.TransformVertex(Point3D.Zero, ref pos);
 
-        float dist = pos.magnitude;
-        pos = pos * Chunk.BlockSize;
+        //pos = pos * 0.2f;
         pos += new Vector3(30000.0f, 30000.0f, 30000.0f);
 
-        return /*noiseGen.noise(pos.x, pos.y, pos.z) +*/ 3.0f - dist;
+        return noiseGen.noise(pos.x, pos.y, pos.z) * 3.0f + (2.0f - height);
     }
 
     //http://paulbourke.net/miscellaneous/interpolation/
@@ -41,15 +48,16 @@ public class PlanetGenerator : IChunkGenerator
     {
         BlockType[,,] blocks = new BlockType[Chunk.BlockSize, Chunk.BlockSize, Chunk.BlockSize];
 
+        const float maxF = 1.0f;
         Vector3 p = new Vector3(chunkPos.x, chunkPos.y, chunkPos.z);
         float v000 = Lookup(p);
-        float v100 = Lookup(p + new Vector3(1.0f, 0.0f, 0.0f));
-        float v010 = Lookup(p + new Vector3(0.0f, 1.0f, 0.0f));
-        float v001 = Lookup(p + new Vector3(0.0f, 0.0f, 1.0f));
-        float v101 = Lookup(p + new Vector3(1.0f, 0.0f, 1.0f));
-        float v011 = Lookup(p + new Vector3(0.0f, 1.0f, 1.0f));
-        float v110 = Lookup(p + new Vector3(1.0f, 1.0f, 0.0f));
-        float v111 = Lookup(p + new Vector3(1.0f, 1.0f, 1.0f));
+        float v100 = Lookup(p + new Vector3(maxF, 0.0f, 0.0f));
+        float v010 = Lookup(p + new Vector3(0.0f, maxF, 0.0f));
+        float v001 = Lookup(p + new Vector3(0.0f, 0.0f, maxF));
+        float v101 = Lookup(p + new Vector3(maxF, 0.0f, maxF));
+        float v011 = Lookup(p + new Vector3(0.0f, maxF, maxF));
+        float v110 = Lookup(p + new Vector3(maxF, maxF, 0.0f));
+        float v111 = Lookup(p + new Vector3(maxF, maxF, maxF));
 
         float invBlockSize = 1.0f / Chunk.BlockSize;
         for (int x = 0; x < Chunk.BlockSize; x++)
