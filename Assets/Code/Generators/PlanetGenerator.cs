@@ -4,11 +4,13 @@ public class PlanetGenerator : IChunkGenerator
 {
     private Entity planet;
     private SimplexNoiseGenerator noiseGen;
+    private int radius;
 
     public PlanetGenerator(int radius, Entity planet)
     {
         this.noiseGen = new SimplexNoiseGenerator();
         this.planet = planet;
+        this.radius = radius;
     }
 
     private float Lookup(Vector3 pos)
@@ -23,7 +25,6 @@ public class PlanetGenerator : IChunkGenerator
 
         planet.TransformVertex(Point3D.Zero, ref pos);
 
-        //pos = pos * 0.2f;
         pos += new Vector3(30000.0f, 30000.0f, 30000.0f);
 
         return noiseGen.noise(pos.x, pos.y, pos.z) * 3.0f + (2.0f - height);
@@ -44,6 +45,16 @@ public class PlanetGenerator : IChunkGenerator
             (v111 * x * y * z);
     }
 
+    bool LookupResource(Vector3 pos, float posScale, float noiseThreshold, float posOffset)
+    {
+        pos.x += posOffset;
+        pos.y += posOffset;
+        pos.z += posOffset;
+        pos *= posScale;
+
+        return noiseGen.noise(pos.x, pos.y, pos.z) > noiseThreshold;
+    }
+
     public BlockType[,,] Generate(Point3D chunkPos)
     {
         BlockType[,,] blocks = new BlockType[Chunk.BlockSize, Chunk.BlockSize, Chunk.BlockSize];
@@ -59,17 +70,43 @@ public class PlanetGenerator : IChunkGenerator
         float v110 = Lookup(p + new Vector3(maxF, maxF, 0.0f));
         float v111 = Lookup(p + new Vector3(maxF, maxF, maxF));
 
+        bool inBedrock = chunkPos.x < radius && chunkPos.y < radius && chunkPos.z < radius && chunkPos.x >= -radius && chunkPos.y >= -radius && chunkPos.z >= -radius;
+
         float invBlockSize = 1.0f / Chunk.BlockSize;
         for (int x = 0; x < Chunk.BlockSize; x++)
+        {
             for (int y = 0; y < Chunk.BlockSize; y++)
+            {
                 for (int z = 0; z < Chunk.BlockSize; z++)
                 {
                     float noise = TrilinearInterpolate(
                         x * invBlockSize, y * invBlockSize, z * invBlockSize,
                         v000, v100, v010, v001, v101, v011, v110, v111);
 
-                    blocks[x,y,z] = noise > 0.0f ? BlockType.Dirt : BlockType.Empty;
+                    BlockType type = BlockType.Empty;
+                    if (noise > 0.0f)
+                    {
+                        if (inBedrock)
+                            type = BlockType.Thruster;
+                        else
+                        {
+                            Vector3 pos = new Vector3(x, y, z);
+                            planet.TransformVertex(chunkPos, ref pos);
+
+                            if (LookupResource(pos, 0.1f, 0.26f, 0.0f))
+                                type = BlockType.UraniumOre;
+                            else if (LookupResource(pos, 0.08f, 0.25f, 0.0f))
+                                type = BlockType.CopperOre;
+                            else if (LookupResource(pos, 0.06f, 0.23f, 1000.0f))
+                                type = BlockType.IronOre;
+                            else
+                                type = BlockType.Stone;
+                        }
+                    }
+                    blocks[x,y,z] = type;
                 }
+            }
+        }
 
         return blocks;
     }
