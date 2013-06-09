@@ -13,7 +13,7 @@ public class PlanetEntity : Entity
 
     protected override IChunkGenerator CreateGenerator()
     {
-        return new PlanetGenerator(1, this);
+        return new PlanetGenerator(this);
     }
 
     protected override List<Point3D> InitialiseBlocks()

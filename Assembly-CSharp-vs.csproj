@@ -52,6 +52,8 @@
      <Compile Include="Assets\Code\Generators\FillGenerator.cs" />
      <Compile Include="Assets\Code\Generators\IChunkGenerator.cs" />
      <Compile Include="Assets\Code\Generators\PlanetGenerator.cs" />
+     <Compile Include="Assets\Code\Generators\PlanetGenerators\LayerGenerator.cs" />
+     <Compile Include="Assets\Code\Generators\PlanetGenerators\OreGenerator.cs" />
      <Compile Include="Assets\Code\Generators\SimplexNoise.cs" />
      <Compile Include="Assets\Code\PlanetEntity.cs" />
      <Compile Include="Assets\Code\Player.cs" />

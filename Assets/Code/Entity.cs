@@ -16,7 +16,7 @@ public class Entity : MonoBehaviour
 
     protected virtual IChunkGenerator CreateGenerator()
     {
-        return new PlanetGenerator(1, this);
+        return new PlanetGenerator(this);
     }
 
     protected virtual List<Point3D> InitialiseBlocks()
