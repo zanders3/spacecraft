@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class PlanetEntity : Entity
 {
     int planetScale = 1;
-    public float PlanetScale { get { return Chunk.BlockSize; } }
+    public float PlanetScale { get { return Chunk.BlockSize * planetScale; } }
     
     public override bool UseMeshCollider { get { return true; } }
 
@@ -33,10 +33,10 @@ public class PlanetEntity : Entity
         return blocks;
     }
 
-    public override void TransformVertex(Point3D chunkPos, ref Vector3 pos)
+    public override Vector3 TransformVertex(Vector3 pos)
     {
-        Vector3 chunkWorldPos = new Vector3(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize);
-        Vector3 surfNormal = (pos + chunkWorldPos) / PlanetScale;
+        //Vector3 chunkWorldPos = new Vector3(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize);
+        Vector3 surfNormal = pos / PlanetScale;
         
         float height = 1.0f;
         if (Mathf.Abs(surfNormal.y) > 1.0f)
@@ -58,7 +58,7 @@ public class PlanetEntity : Entity
         //surf normal at this point represents a point within the unit sphere. 
         //Height goes above 0 above the unit sphere to extrude above the surface.
         surfNormal = Cubize(surfNormal);
-        pos = (surfNormal * height * height * PlanetScale) - chunkWorldPos;
+        return surfNormal * height * PlanetScale;
     }
 
     //http://mathproofs.blogspot.co.uk/2005/07/mapping-cube-to-sphere.html
@@ -78,8 +78,6 @@ public class PlanetEntity : Entity
 
     public override Vector3 InverseTransformVertex(Vector3 position)
     {
-        position = transform.InverseTransformPoint(position);
-
         Vector3 surfNormal = position / PlanetScale;
         
         float height = surfNormal.magnitude;
@@ -87,7 +85,7 @@ public class PlanetEntity : Entity
         surfNormal = InverseCubize(surfNormal / height) * PlanetScale;
         position = surfNormal;
         
-        height = (Mathf.Sqrt(height) * PlanetScale) - PlanetScale;
+        height = (height * PlanetScale) - PlanetScale;
 
         Vector3 anyDir = new Vector3(Mathf.Abs(surfNormal.x), Mathf.Abs(surfNormal.y), Mathf.Abs(surfNormal.z));
         if (anyDir.y > anyDir.x && anyDir.y > anyDir.z)

@@ -175,6 +175,7 @@ public class Chunk : MonoBehaviour
 	void GenerateMesh(Point3D n, Point3D t, Point3D bn, Point3D o, bool flip, ref List<Vector3> verts, ref List<Vector3> normals, ref List<Vector2> tex, ref List<int> tris)
 	{
 		Vector3 normal = new Vector3(n.x, n.y, n.z);
+        int cx = ChunkPos.x * Chunk.BlockSize, cy = ChunkPos.y * Chunk.BlockSize, cz = ChunkPos.z * Chunk.BlockSize;
 
 		for (int x = 1; x<BlockSize+1; x++)
 		{
@@ -196,12 +197,12 @@ public class Chunk : MonoBehaviour
 							tris.Add(i+1); tris.Add(i+2); tris.Add(i+3);
 						}
 
-						int ox = x + o.x - 1, oy = y + o.y - 1, oz = z + o.z - 1;
+						int ox = cx + x + o.x - 1, oy = cy + y + o.y - 1, oz = cz + z + o.z - 1;
                         Vector3 posA, posB, posC, posD;
-						AddVertex(ChunkPos, new Vector3(ox, 		oy, 		 oz), ref verts, out posA);
-						AddVertex(ChunkPos, new Vector3(ox+t.x,		oy+t.y, 	 oz+t.z), ref verts, out posB);
-						AddVertex(ChunkPos, new Vector3(ox+bn.x,	oy+bn.y, 	 oz+bn.z), ref verts, out posC);
-						AddVertex(ChunkPos, new Vector3(ox+t.x+bn.x,oy+t.y+bn.y, oz+t.z+bn.z), ref verts, out posD);
+						AddVertex(new Vector3(ox, 		oy, 		 oz), ref verts, out posA);
+						AddVertex(new Vector3(ox+t.x,		oy+t.y, 	 oz+t.z), ref verts, out posB);
+						AddVertex(new Vector3(ox+bn.x,	oy+bn.y, 	 oz+bn.z), ref verts, out posC);
+						AddVertex(new Vector3(ox+t.x+bn.x,oy+t.y+bn.y, oz+t.z+bn.z), ref verts, out posD);
 
                         Vector3 faceNormal = Vector3.Cross((posA - posB), (posA - posC)).normalized;
                         if (Vector3.Dot(faceNormal, normal) < 0.0f)
@@ -221,20 +222,17 @@ public class Chunk : MonoBehaviour
 		}
 	}
 
-    void AddVertex(Point3D chunkPos, Vector3 pos, ref List<Vector3> verts, out Vector3 oPos)
+    void AddVertex(Vector3 worldPos, ref List<Vector3> verts, out Vector3 oPos)
     {
-        Entity.TransformVertex(chunkPos, ref pos);
-        oPos = pos;
-        verts.Add(pos);
+        worldPos = Entity.TransformVertex(worldPos);
+        oPos = worldPos;
+        verts.Add(worldPos);
     }
 
 	void OnDrawGizmos()
 	{
-		Gizmos.matrix = transform.localToWorldMatrix;
-		Gizmos.DrawWireCube(
-			new Vector3(BlockSize * 0.5f, BlockSize * 0.5f, BlockSize * 0.5f),
-			new Vector3(BlockSize, BlockSize, BlockSize)
-		);
+        Gizmos.matrix = Entity.transform.localToWorldMatrix;
+        Entity.DrawVoxelOutline(new Point3D(ChunkPos.x * Chunk.BlockSize, ChunkPos.y * Chunk.BlockSize, ChunkPos.z * Chunk.BlockSize), Chunk.BlockSize);
 	}
 }
 

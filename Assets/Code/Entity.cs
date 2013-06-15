@@ -21,7 +21,10 @@ public class Entity : MonoBehaviour
 
     protected virtual List<Point3D> InitialiseBlocks()
     {
-        return new List<Point3D>();
+        return new List<Point3D>()
+        {
+            new Point3D(0, 0, 0)
+        };
     }
 
 	void Start()
@@ -94,12 +97,49 @@ public class Entity : MonoBehaviour
 			return chunk.GetBlock(x, y, z);
 	}
 
-    public virtual void TransformVertex(Point3D chunkPos, ref Vector3 pos)
+    public virtual Vector3 TransformVertex(Vector3 pos)
     {
+        return pos;
     }
 
     public virtual Vector3 InverseTransformVertex(Vector3 pos)
     {
-        return transform.InverseTransformPoint(pos);
+        return pos;
+    }
+
+    public void DrawVoxelOutline(Point3D target, float size)
+    {
+        Vector3 tL = new Vector3(target.x, target.y, target.z);
+        Vector3 tR = tL + Vector3.right * size;
+        Vector3 bL = tL + Vector3.up * size;
+        Vector3 bR = bL + Vector3.right * size;
+        Vector3 fTL = tL + Vector3.forward * size;
+        Vector3 fTR = fTL + Vector3.right * size;
+        Vector3 fBL = fTL + Vector3.up * size;
+        Vector3 fBR = fBL + Vector3.right * size;
+        
+        tL = TransformVertex(tL);
+        tR = TransformVertex(tR);
+        bL = TransformVertex(bL);
+        bR = TransformVertex(bR);
+        fTL = TransformVertex(fTL);
+        fTR = TransformVertex(fTR);
+        fBL = TransformVertex(fBL);
+        fBR = TransformVertex(fBR);
+        
+        Gizmos.DrawLine(tL, tR);
+        Gizmos.DrawLine(tR, bR);
+        Gizmos.DrawLine(bR, bL);
+        Gizmos.DrawLine(bL, tL);
+        
+        Gizmos.DrawLine(tL, fTL);
+        Gizmos.DrawLine(tR, fTR);
+        Gizmos.DrawLine(bR, fBR);
+        Gizmos.DrawLine(bL, fBL);
+        
+        Gizmos.DrawLine(fTL, fTR);
+        Gizmos.DrawLine(fTR, fBR);
+        Gizmos.DrawLine(fBR, fBL);
+        Gizmos.DrawLine(fBL, fTL);
     }
 }

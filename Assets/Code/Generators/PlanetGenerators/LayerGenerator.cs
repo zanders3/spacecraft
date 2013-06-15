@@ -53,7 +53,7 @@ public class LayerGenerator
     {
         float height = GetHeight(pos);
         
-        entity.TransformVertex(Point3D.Zero, ref pos);
+        pos = entity.TransformVertex(pos);
         
         pos += new Vector3(30000.0f, 30000.0f, 30000.0f);
         
@@ -106,7 +106,7 @@ public class LayerGenerator
         else
         {
             Vector3 pos = new Vector3(x, y, z);
-            entity.TransformVertex(chunkPos, ref pos);
+            pos = entity.TransformVertex(pos);
 
             if (info.Ores != null)
             {

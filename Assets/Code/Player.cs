@@ -122,8 +122,8 @@ public class Player : MonoBehaviour
                 targetEntity = chunk.Entity;
                 hitPos = hit.point;
 
-                Vector3 localPoint = chunk.Entity.InverseTransformVertex(hit.point + hit.normal * -0.5f);
-                Vector3 localPlacePoint = chunk.Entity.InverseTransformVertex(hitPos + hit.normal * 0.5f);
+                Vector3 localPoint = chunk.Entity.InverseTransformVertex(chunk.Entity.transform.InverseTransformPoint(hit.point + hit.normal * -0.5f));
+                Vector3 localPlacePoint = chunk.Entity.InverseTransformVertex(chunk.Entity.transform.InverseTransformPoint(hitPos + hit.normal * 0.5f));
 
                 targetIndex = new Point3D(Mathf.FloorToInt(localPoint.x), Mathf.FloorToInt(localPoint.y), Mathf.FloorToInt(localPoint.z));
                 targetPlaceIndex = new Point3D(Mathf.FloorToInt(localPlacePoint.x), Mathf.FloorToInt(localPlacePoint.y), Mathf.FloorToInt(localPlacePoint.z));
@@ -148,52 +148,16 @@ public class Player : MonoBehaviour
             mouseDown = false;
     }
 
-    void DrawVoxelOutline(Point3D target)
-    {
-        Vector3 tL = new Vector3(target.x, target.y, target.z);
-        Vector3 tR = tL + Vector3.right;
-        Vector3 bL = tL + Vector3.up;
-        Vector3 bR = bL + Vector3.right;
-        Vector3 fTL = tL + Vector3.forward;
-        Vector3 fTR = fTL + Vector3.right;
-        Vector3 fBL = fTL + Vector3.up;
-        Vector3 fBR = fBL + Vector3.right;
-
-        targetEntity.TransformVertex(Point3D.Zero, ref tL);
-        targetEntity.TransformVertex(Point3D.Zero, ref tR);
-        targetEntity.TransformVertex(Point3D.Zero, ref bL);
-        targetEntity.TransformVertex(Point3D.Zero, ref bR);
-        targetEntity.TransformVertex(Point3D.Zero, ref fTL);
-        targetEntity.TransformVertex(Point3D.Zero, ref fTR);
-        targetEntity.TransformVertex(Point3D.Zero, ref fBL);
-        targetEntity.TransformVertex(Point3D.Zero, ref fBR);
-        
-        Gizmos.DrawLine(tL, tR);
-        Gizmos.DrawLine(tR, bR);
-        Gizmos.DrawLine(bR, bL);
-        Gizmos.DrawLine(bL, tL);
-        
-        Gizmos.DrawLine(tL, fTL);
-        Gizmos.DrawLine(tR, fTR);
-        Gizmos.DrawLine(bR, fBR);
-        Gizmos.DrawLine(bL, fBL);
-        
-        Gizmos.DrawLine(fTL, fTR);
-        Gizmos.DrawLine(fTR, fBR);
-        Gizmos.DrawLine(fBR, fBL);
-        Gizmos.DrawLine(fBL, fTL);
-    }
-
     void OnDrawGizmos()
     {
         if (targetEntity != null)
         {
             Gizmos.matrix = targetEntity.transform.localToWorldMatrix;
             Gizmos.color = Color.green;
-            DrawVoxelOutline(targetPlaceIndex);
+            targetEntity.DrawVoxelOutline(targetPlaceIndex, 1.0f);
 
             Gizmos.color = Color.red;
-            DrawVoxelOutline(targetIndex);
+            targetEntity.DrawVoxelOutline(targetIndex, 1.0f);
 
             Gizmos.matrix = Matrix4x4.identity;
             Gizmos.color = Color.green;
