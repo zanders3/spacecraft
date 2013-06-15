@@ -58,7 +58,7 @@ public class PlanetEntity : Entity
         //surf normal at this point represents a point within the unit sphere. 
         //Height goes above 0 above the unit sphere to extrude above the surface.
         surfNormal = Cubize(surfNormal);
-        return surfNormal * height * PlanetScale;
+        return surfNormal * height * height * (PlanetScale * 0.2f);
     }
 
     //http://mathproofs.blogspot.co.uk/2005/07/mapping-cube-to-sphere.html
@@ -78,14 +78,14 @@ public class PlanetEntity : Entity
 
     public override Vector3 InverseTransformVertex(Vector3 position)
     {
-        Vector3 surfNormal = position / PlanetScale;
+        Vector3 surfNormal = position / (PlanetScale * 0.2f);
         
         float height = surfNormal.magnitude;
         
         surfNormal = InverseCubize(surfNormal / height) * PlanetScale;
         position = surfNormal;
         
-        height = (height * PlanetScale) - PlanetScale;
+        height = (Mathf.Sqrt(height) * PlanetScale) - PlanetScale;
 
         Vector3 anyDir = new Vector3(Mathf.Abs(surfNormal.x), Mathf.Abs(surfNormal.y), Mathf.Abs(surfNormal.z));
         if (anyDir.y > anyDir.x && anyDir.y > anyDir.z)

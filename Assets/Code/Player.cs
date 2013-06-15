@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
 
     public Transform Head;
 
-    PlayerMovement playerMovement = PlayerMovement.Space;
+    PlayerMovement playerMovement = PlayerMovement.Planet;
     Entity targetEntity = null;
     Point3D targetIndex, targetPlaceIndex;
     Vector3 targetNormal;
