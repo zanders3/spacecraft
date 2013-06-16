@@ -25,10 +25,11 @@ public class LayerGenerator
     private BlockLayerInfo info;
     private Entity entity;
     private SimplexNoiseGenerator noiseGen;
-    private Point3D chunkPos;
+    private int planetScale;
 
-    public LayerGenerator(BlockLayerInfo info, Entity entity, SimplexNoiseGenerator noiseGen)
+    public LayerGenerator(int planetScale, BlockLayerInfo info, Entity entity, SimplexNoiseGenerator noiseGen)
     {
+        this.planetScale = planetScale;
         this.info = info;
         this.entity = entity;
         this.noiseGen = noiseGen;
@@ -39,11 +40,11 @@ public class LayerGenerator
         const float negOffset = 0.5f / Chunk.BlockSize;
         
         float height = 1.0f;
-        if (Mathf.Abs(pos.y) > 1.0f)
+        if (Mathf.Abs(pos.y) > planetScale)
             height = pos.y > 0 ? pos.y : -pos.y-negOffset;
-        else if (Mathf.Abs(pos.x) > 1.0f)
+        else if (Mathf.Abs(pos.x) > planetScale)
             height = pos.x > 0 ? pos.x : -pos.x-negOffset;
-        else if (Mathf.Abs(pos.z) > 1.0f)
+        else if (Mathf.Abs(pos.z) > planetScale)
             height = pos.z > 0 ? pos.z : -pos.z-negOffset;
         
         return height * Chunk.BlockSize;
@@ -51,13 +52,13 @@ public class LayerGenerator
 
     private float Lookup(Vector3 pos)
     {
-        float height = GetHeight(pos);
+        float height = GetHeight(pos / Chunk.BlockSize);
         
         pos = entity.TransformVertex(pos);
         
         pos += new Vector3(30000.0f, 30000.0f, 30000.0f);
         
-        return noiseGen.noise(pos.x, pos.y, pos.z) * info.HeightScale + (info.HeightLimit - height);
+        return noiseGen.noise(pos.x, pos.y, pos.z) * info.HeightScale * planetScale  + (info.HeightLimit * planetScale - height);
     }
 
     /// <summary>
@@ -66,10 +67,8 @@ public class LayerGenerator
     /// <param name="chunkPos">Chunk position.</param>
     public void CalculateChunk(Point3D chunkPos)
     {
-        this.chunkPos = chunkPos;
-
-        const float maxF = 1.0f;
-        Vector3 p = new Vector3(chunkPos.x, chunkPos.y, chunkPos.z);
+        const float maxF = Chunk.BlockSize;
+        Vector3 p = new Vector3(chunkPos.x, chunkPos.y, chunkPos.z) * Chunk.BlockSize;
         v000 = Lookup(p);
         v100 = Lookup(p + new Vector3(maxF, 0.0f, 0.0f));
         v010 = Lookup(p + new Vector3(0.0f, maxF, 0.0f));

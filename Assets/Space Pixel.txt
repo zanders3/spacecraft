@@ -3,8 +3,8 @@ Space Pixel
 - A space ship 3D voxel game minecraft clone because.
 
 - Build a ship from first principles, mining ore and processing it.
-- Explore a voxel asteroid field galaxy thing also with planets and gravity on them.
-- Basically minecraft with mining for important minerals with a space theme.
+- Break orbit.
+- Build a massive ship in space.
 
 Entity Hierarchy
 * Galaxy -> Solar System -> Planets
@@ -26,6 +26,9 @@ Ships
 Fabricator
 * Produces items from ore. Ore is placed inside, you select ship blocks to generate. Gradually generates blocks.
 
+Shipyard
+* A special type of block that levels off the 8x8 chunk surface. Allows you to produce an 8x8x8 ship until you break orbit.
+
 Player
 * Has a spacesuit with jetpack which only works in short bursts but has unlimited fuel. You'll need a ship to break orbit, but they are also affected by gravity.
 
@@ -37,6 +40,8 @@ TODO:
 	* Add support for multiple block types
 	* Gonna need voxel streaming to/from disk for large planets (UUUUGGGHHH)
 	* 3D height noise
+		* Need grass on top layer
+		* Blocks with different textures on each face, differing per planet angle.
 * Ship creation
 	* Reactor core
 	* Pilot seat

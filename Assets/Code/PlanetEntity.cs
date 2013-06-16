@@ -6,14 +6,14 @@ using System.Collections.Generic;
 /// </summary>
 public class PlanetEntity : Entity
 {
-    int planetScale = 1;
+    int planetScale = 3;
     public float PlanetScale { get { return Chunk.BlockSize * planetScale; } }
     
     public override bool UseMeshCollider { get { return true; } }
 
     protected override IChunkGenerator CreateGenerator()
     {
-        return new PlanetGenerator(this);
+        return new PlanetGenerator(planetScale, this);
     }
 
     protected override List<Point3D> InitialiseBlocks()

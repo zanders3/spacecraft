@@ -21,9 +21,10 @@ public class PlanetGenerator : IChunkGenerator
             {
                 new OreGenerator()
                 {
-                    PosScale = 0.1f,
-                    NoiseThreshold = 0.26f,
-                    Type = BlockType.UraniumOre
+                    PosScale = 0.06f,
+                    NoiseThreshold = 0.23f,
+                    PosOffset = 1000.0f,
+                    Type = BlockType.IronOre
                 },
                 new OreGenerator()
                 {
@@ -33,36 +34,37 @@ public class PlanetGenerator : IChunkGenerator
                 },
                 new OreGenerator()
                 {
-                    PosScale = 0.06f,
-                    NoiseThreshold = 0.23f,
-                    PosOffset = 1000.0f,
-                    Type = BlockType.IronOre
+                    PosScale = 0.1f,
+                    NoiseThreshold = 0.26f,
+                    Type = BlockType.UraniumOre
                 }
             }
         },
         new BlockLayerInfo()
         {
             HeightLimit = 20.0f,
-            HeightScale = 16.0f,
+            HeightScale = 5.0f,
             Type = BlockType.Dirt
         }
     };
     
     private Entity entity;
+    private int planetScale;
     private SimplexNoiseGenerator noiseGen;
     private List<LayerGenerator> layerGens = new List<LayerGenerator>();
 
-    public PlanetGenerator(Entity entity)
+    public PlanetGenerator(int planetScale, Entity entity)
     {
         this.noiseGen = new SimplexNoiseGenerator();
         this.entity = entity;
+        this.planetScale = planetScale;
     }
     
     public BlockType[,,] Generate(Point3D chunkPos)
     {
         if (layerGens.Count != layerInfo.Count)
         {
-            layerGens = new List<LayerGenerator>(layerInfo.Select(info => new LayerGenerator(info, entity, noiseGen)));
+            layerGens = new List<LayerGenerator>(layerInfo.Select(info => new LayerGenerator(planetScale, info, entity, noiseGen)));
         }
 
         BlockType[,,] blocks = new BlockType[Chunk.BlockSize, Chunk.BlockSize, Chunk.BlockSize];

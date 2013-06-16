@@ -12,11 +12,11 @@ public class Entity : MonoBehaviour
     private List<Chunk> chunkUpdates = new List<Chunk>();
     private ChunkStore chunkStore;
 
-    public virtual bool UseMeshCollider { get { return true; } }
+    public virtual bool UseMeshCollider { get { return false; } }
 
     protected virtual IChunkGenerator CreateGenerator()
     {
-        return new PlanetGenerator(this);
+        return new PlanetGenerator(1, this);
     }
 
     protected virtual List<Point3D> InitialiseBlocks()
