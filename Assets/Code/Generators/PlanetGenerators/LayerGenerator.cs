@@ -26,6 +26,7 @@ public class LayerGenerator
     private Entity entity;
     private SimplexNoiseGenerator noiseGen;
     private int planetScale;
+    private Point3D chunkPos;
 
     public LayerGenerator(int planetScale, BlockLayerInfo info, Entity entity, SimplexNoiseGenerator noiseGen)
     {
@@ -67,6 +68,8 @@ public class LayerGenerator
     /// <param name="chunkPos">Chunk position.</param>
     public void CalculateChunk(Point3D chunkPos)
     {
+        this.chunkPos = chunkPos;
+
         const float maxF = Chunk.BlockSize;
         Vector3 p = new Vector3(chunkPos.x, chunkPos.y, chunkPos.z) * Chunk.BlockSize;
         v000 = Lookup(p);
@@ -104,7 +107,7 @@ public class LayerGenerator
             return BlockType.Empty;
         else
         {
-            Vector3 pos = new Vector3(x, y, z);
+            Vector3 pos = new Vector3(x + chunkPos.x * Chunk.BlockSize, y + chunkPos.y * Chunk.BlockSize, z + chunkPos.z * Chunk.BlockSize);
             pos = entity.TransformVertex(pos);
 
             if (info.Ores != null)

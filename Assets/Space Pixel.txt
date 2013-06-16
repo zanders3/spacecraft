@@ -4,7 +4,8 @@ Space Pixel
 
 - Build a ship from first principles, mining ore and processing it.
 - Break orbit.
-- Build a massive ship in space.
+- Build an FTL drive (which are massive and require LOTS of power and rare materials)
+- Explore the galaxy
 
 Entity Hierarchy
 * Galaxy -> Solar System -> Planets
@@ -31,6 +32,11 @@ Shipyard
 
 Player
 * Has a spacesuit with jetpack which only works in short bursts but has unlimited fuel. You'll need a ship to break orbit, but they are also affected by gravity.
+
+* File format made up of two files:
+	* A file 'map' of chunk position int hash -> file offset
+	* File containing chunk data
+		* Nearby chunks get plonked together!
 
 TODO:
 

@@ -26,7 +26,7 @@ public class PlanetEntity : Entity
                     int xOut = x >= planetScale || x < -planetScale ? 1 : 0;
                     int yOut = y >= planetScale || y < -planetScale ? 1 : 0;
                     int zOut = z >= planetScale || z < -planetScale ? 1 : 0;
-                    if ((xOut + yOut + zOut) <= 1)
+                    if ((xOut + yOut + zOut) == 1)
                         blocks.Add(new Point3D(x, y, z));
                 }
 

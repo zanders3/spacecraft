@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
 
     Vector3 gravityPosition = Vector3.zero;
     Vector3 up = Vector3.up, right = Vector3.right, forward = Vector3.forward;
-    bool isColliding = false;
+    public bool isColliding = false;
 
     float jetpackFuel = 1.0f;
 
@@ -34,9 +34,27 @@ public class Player : MonoBehaviour
         Screen.lockCursor = true;
     }
 
-    void OnCollisionStay()
+    void OnCollisionEnter(Collision coll)
     {
-        isColliding = true;
+        if (isColliding)
+            return;
+
+        for (int i = 0; i<coll.contacts.Length; i++)
+            if (Vector3.Dot(coll.contacts [i].normal, up) > 0.8f)
+            {
+                isColliding = true;
+                return;
+            }
+    }
+
+    void OnCollisionStay(Collision coll)
+    {
+        OnCollisionEnter(coll);
+    }
+
+    void OnCollisionExit()
+    {
+        isColliding = false;
     }
 
     void DrawQuad(Rect position, Color color) 
@@ -80,7 +98,6 @@ public class Player : MonoBehaviour
         if (isColliding)
         {
             Vector3 drag = rigidbody.velocity - (Vector3.Dot(up, rigidbody.velocity) * up);
-            isColliding = false;
 
             rigidbody.AddForce(movement - drag * 0.2f, ForceMode.Impulse);
         }

@@ -8,13 +8,13 @@ public class PlanetGenerator : IChunkGenerator
     {
         new BlockLayerInfo()
         {
-            HeightLimit = 9.0f,
-            HeightScale = 0.0f,
+            HeightLimit = 15.5f,
+            HeightScale = 0.5f,
             Type = BlockType.Thruster
         },
         new BlockLayerInfo()
         {
-            HeightLimit = 18.0f,
+            HeightLimit = 20.0f,
             HeightScale = 16.0f,
             Type = BlockType.Stone,
             Ores = new List<OreGenerator>()
@@ -22,14 +22,15 @@ public class PlanetGenerator : IChunkGenerator
                 new OreGenerator()
                 {
                     PosScale = 0.06f,
-                    NoiseThreshold = 0.23f,
+                    NoiseThreshold = 0.20f,
                     PosOffset = 1000.0f,
                     Type = BlockType.IronOre
                 },
                 new OreGenerator()
                 {
                     PosScale = 0.08f,
-                    NoiseThreshold = 0.25f,
+                    NoiseThreshold = 0.23f,
+                    PosOffset = 2500.0f,
                     Type = BlockType.CopperOre
                 },
                 new OreGenerator()
@@ -42,7 +43,7 @@ public class PlanetGenerator : IChunkGenerator
         },
         new BlockLayerInfo()
         {
-            HeightLimit = 20.0f,
+            HeightLimit = 21.0f,
             HeightScale = 5.0f,
             Type = BlockType.Dirt
         }
