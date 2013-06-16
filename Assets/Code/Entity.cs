@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,9 +8,19 @@ using System.Collections.Generic;
 /// </summary>
 public class Entity : MonoBehaviour
 {
+    class PendingChunk
+    {
+        public Point3D ChunkPos;
+        public Vector3 WorldPos;
+    }
+
     public Material Material;
 
     private List<Chunk> chunkUpdates = new List<Chunk>();
+
+    //A list of chunks that have yet to be generated
+    private List<PendingChunk> pendingChunks = new List<PendingChunk>();
+
     private ChunkStore chunkStore;
 
     public virtual bool UseMeshCollider { get { return false; } }
@@ -30,17 +41,37 @@ public class Entity : MonoBehaviour
 	void Start()
 	{
 		chunkStore = new ChunkStore(CreateGenerator(), Material, transform);
-        foreach (Point3D pos in InitialiseBlocks())
+        pendingChunks = InitialiseBlocks().Select(chunkPos => new PendingChunk()
         {
-            chunkUpdates.Add(chunkStore.Add(pos.x * Chunk.BlockSize, pos.y * Chunk.BlockSize, pos.z * Chunk.BlockSize));
-        }
+            ChunkPos = chunkPos,
+            WorldPos = TransformVertex(new Vector3(chunkPos.x, chunkPos.y, chunkPos.z) * Chunk.BlockSize)
+        }).ToList();
 	}
+
+    const float chunkInstantiateDistance = Chunk.BlockSize * 3;
 
     void Update()
     {
+        if (pendingChunks.Count > 0)
+        {
+            float chunkInstDistSquared = chunkInstantiateDistance * chunkInstantiateDistance;
+
+            Vector3 playerPos = transform.InverseTransformPoint(Player.Instance.transform.position);
+            for (int i = 0; i<pendingChunks.Count; i++)
+            {
+                if ((playerPos - pendingChunks[i].WorldPos).sqrMagnitude < chunkInstDistSquared)
+                {
+                    Point3D chunkPos = pendingChunks[i].ChunkPos;
+                    chunkUpdates.Add(chunkStore.Add(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize));
+                    pendingChunks.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
         if (chunkUpdates.Count > 0)
         {
-            Debug.Log(chunkUpdates.Count + " updates");
+            Debug.Log(chunkUpdates.Count + " updates " + pendingChunks.Count + " left");
 
             foreach (Chunk chunk in chunkUpdates)
                 chunk.UpdateChunk();

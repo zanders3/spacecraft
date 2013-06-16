@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
         Space
     }
 
+    public static Player Instance = null;
+
     public Transform Head;
 
     PlayerMovement playerMovement = PlayerMovement.Planet;
@@ -27,6 +29,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        Instance = this;
         rigidbody.freezeRotation = true;
         Screen.lockCursor = true;
     }
@@ -92,7 +95,9 @@ public class Player : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space))
         {
-            if (jetpackFuel > 0.0f)
+            if (isColliding)
+                rigidbody.AddForce(up, ForceMode.Impulse);
+            else if (jetpackFuel > 0.0f)
             {
                 jetpackFuel = Mathf.Max(jetpackFuel - Time.deltaTime * 2.0f, 0.0f);
                 rigidbody.AddForce(up * (isColliding ? 1000.0f : 20.0f));
