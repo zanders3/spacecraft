@@ -16,8 +16,8 @@ Entities
 * Voxel sphere generation with gravity.
 
 Blocks
-* Dirt, Stone, Bedrock, Iron Ore, Uranium Ore, Copper Ore
-* Fabricator, Nuclear Reactor Core, Ion Drive, Airlock, Pipe, Wiring, Steel Plating, Steel, Pilot Seat
+* Dirt, Stone, Bedrock, Ore, Uranium Ore, Copper Ore
+* Fabricator, Fission Reactor, Ion Drive, Airlock, Pipe, Wiring, Steel, Pilot Seat
 
 Ships
 * Need a power core and engines connected with pipes. Uranium powers the fuel cells.
@@ -25,10 +25,7 @@ Ships
 * Engines determine speed, doesn't need to be realistic.
 
 Fabricator
-* Produces items from ore. Ore is placed inside, you select ship blocks to generate. Gradually generates blocks.
-
-Shipyard
-* A special type of block that levels off the 8x8 chunk surface. Allows you to produce an 8x8x8 ship until you break orbit.
+* Produces items from ore. Ore is placed inside, you select which block type to generate. Gradually generates blocks.
 
 Player
 * Has a spacesuit with jetpack which only works in short bursts but has unlimited fuel. You'll need a ship to break orbit, but they are also affected by gravity.
@@ -38,18 +35,62 @@ Player
 	* File containing chunk data
 		* Nearby chunks get plonked together!
 
+Crafting
+* Need a tech tree of crafting!
+	* Stone -> Concrete
+	* 4x Concrete -> Fabricator
+	* 8x Concrete -> Smelter
+	* Iron Ore -> (smelter) -> Steel Block
+	* 9 x Steel Block + 6 x Uranium + 3 x Copper -> (fabricator) -> Fission Reactor
+	* Copper Ore -> (smelter) -> Copper Block
+	* Copper Block -> (fabricator) -> 4 x Wiring
+	* Steel Block -> (fabricator) -> 4 x Pipe
+	* Steel Block + Copper Ingot -> (fabricator) -> Airlock
+	* Steel Block + Copper Ingot -> (fabricator) -> Pilot Seat
+
+* KEEP IT SIMPLE, STUPID. FOCUS SHOULD BE ON SHIPS.
+	* 4x Stone -> Fabricator
+	* Stone -> Concrete
+	* Iron Ore -> (fabricator) -> Steel Block
+	* Uranium Ore -> Fuel Rod
+	* Steel -> (fabricator) -> Airlock, (1/16 x) Power Core, 4x Power Conduit???
+
+
+* Mine resources (Dirt, Stone, Iron Ore, Uranium Ore, Copper Ore)
+	* Dirt + Stone x 2 + Iron x 8 + Copper x 6 -> Matter
+	* Uranium -> Fuel Pellet
+	* Blocks get CHIPPED AWAY
+* You place and construct prefabs by firing your matteriser laser, which eats up your matter resources.
+	* Complex, exotic blocks/prefabs eat more matter.
+* Big question is, how do you start a new ship???
+	* Place a foundation, which is an 8x8x1 flat block, which is a separate entity.
+	* Build the spaceship out of the components.
+	* Moving the space ship breaks the foundation connection, allowing you to build another ship, or just a building.
+
+* Foundation Entity
+	* A layer of concrete is generated on bottom layer, blocks cannot be placed below it.
+	* Climbing into pilot seat destroys the bottom layer and inits a ship entity (should be no difference?)
+* Ship Entity
+	* Multiple pilot seats, thrusters and reactor cores.
+	* Pilot seat contains ship movement logic.
+	* Power simulation through wires to power ship systems (fluid sim, blocks add/remove energy)
+	* Air simulation (fluid sim, blocks add/remove air)
+	* Light transport (flood fill AGAIN but with blur averaging, iterative AGAIN)
+
 TODO:
 
 * Need to map from planet point to voxel point correctly.
 * Add player jet pack
 * Planet surface generation w/ multiple radii (1, 2, 4, 8 ???)
 	* Add support for multiple block types
-	* Gonna need voxel streaming to/from disk for large planets (UUUUGGGHHH)
 	* 3D height noise
 		* Need grass on top layer
 		* Blocks with different textures on each face, differing per planet angle.
 * Ship creation
-	* Reactor core
+	* Placement of shipyard
+		* Placement on planet surface
+		* Also useful for building construction
+	* Reactor core prefab
 	* Pilot seat
 	* Engine
 * Investigate voxel chipping (solid, wedge x 12 rotations, corner x 8)

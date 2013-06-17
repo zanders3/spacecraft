@@ -44,10 +44,10 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Code\Blocks.cs" />
-     <Compile Include="Assets\Code\Chunk.cs" />
-     <Compile Include="Assets\Code\ChunkStore.cs" />
-     <Compile Include="Assets\Code\ChunkTextureMapper.cs" />
+     <Compile Include="Assets\Code\Chunks\Blocks.cs" />
+     <Compile Include="Assets\Code\Chunks\Chunk.cs" />
+     <Compile Include="Assets\Code\Chunks\ChunkStore.cs" />
+     <Compile Include="Assets\Code\Chunks\ChunkTextureMapper.cs" />
      <Compile Include="Assets\Code\Entity.cs" />
      <Compile Include="Assets\Code\Generators\FillGenerator.cs" />
      <Compile Include="Assets\Code\Generators\IChunkGenerator.cs" />
@@ -56,7 +56,7 @@
      <Compile Include="Assets\Code\Generators\PlanetGenerators\OreGenerator.cs" />
      <Compile Include="Assets\Code\Generators\SimplexNoise.cs" />
      <Compile Include="Assets\Code\PlanetEntity.cs" />
-     <Compile Include="Assets\Code\Player.cs" />
+     <Compile Include="Assets\Code\Player\Player.cs" />
      <None Include="Assets\Space Pixel.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

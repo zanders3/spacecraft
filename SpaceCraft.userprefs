@@ -1,17 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Code/Blocks.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Code/Entity.cs">
     <Files>
-      <File FileName="Assets/Code/ChunkStore.cs" Line="1" Column="1" />
-      <File FileName="Assets/Code/Entity.cs" Line="1" Column="1" />
-      <File FileName="Assets/Code/Chunk.cs" Line="3" Column="14" />
-      <File FileName="Assets/Code/PlanetEntity.cs" Line="41" Column="9" />
-      <File FileName="Assets/Code/Player.cs" Line="1" Column="1" />
-      <File FileName="Assets/Code/Generators/IChunkGenerator.cs" Line="1" Column="1" />
+      <File FileName="Assets/Code/Generators/IChunkGenerator.cs" Line="5" Column="19" />
       <File FileName="Assets/Code/Generators/FillGenerator.cs" Line="1" Column="1" />
-      <File FileName="Assets/Code/Generators/PlanetGenerator.cs" Line="25" Column="9" />
       <File FileName="Assets/Code/Generators/SimplexNoise.cs" Line="1" Column="1" />
-      <File FileName="Assets/Code/Blocks.cs" Line="25" Column="2" />
+      <File FileName="Assets/Code/Entity.cs" Line="172" Column="35" />
+      <File FileName="Assets/Code/Generators/PlanetGenerators/LayerGenerator.cs" Line="110" Column="139" />
+      <File FileName="Assets/Code/Generators/PlanetGenerator.cs" Line="35" Column="19" />
+      <File FileName="Assets/Code/Generators/PlanetGenerators/OreGenerator.cs" Line="23" Column="17" />
+      <File FileName="Assets/Code/Player/Player.cs" Line="25" Column="5" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -19,8 +17,8 @@
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="Assets" expanded="True">
               <Node name="Code" expanded="True">
-                <Node name="Generators" expanded="True" />
-                <Node name="Blocks.cs" selected="True" />
+                <Node name="Chunks" expanded="True" />
+                <Node name="Entity.cs" selected="True" />
               </Node>
             </Node>
           </Node>

@@ -70,6 +70,7 @@ public class Player : MonoBehaviour
     {
         DrawQuad(new Rect(10.0f, Screen.height - 40.0f, Screen.width - 20.0f, 30.0f), new Color(0.6f, 0.6f, 0.0f));
         DrawQuad(new Rect(10.0f, Screen.height - 40.0f, (Screen.width - 20.0f) * jetpackFuel, 30.0f), Color.yellow);
+        GUI.Label(new Rect(12.0f, Screen.height - 35.0f, 100.0f, 20.0f), "Jet Pack");
     }
 
     void UpdatePlayerPosition()

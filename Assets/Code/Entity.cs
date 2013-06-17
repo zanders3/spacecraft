@@ -16,6 +16,7 @@ public class Entity : MonoBehaviour
 
     public Material Material;
 
+    //Chunks that will be processed on the next update
     private List<Chunk> chunkUpdates = new List<Chunk>();
 
     //A list of chunks that have yet to be generated
