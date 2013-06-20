@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
 
     bool mouseDown = false;
 
+    PlayerInventory inventory = new PlayerInventory();
+
     void Start()
     {
         Instance = this;
@@ -57,20 +59,13 @@ public class Player : MonoBehaviour
         isColliding = false;
     }
 
-    void DrawQuad(Rect position, Color color) 
-    {
-        Texture2D texture = new Texture2D(1, 1);
-        texture.SetPixel(0,0,color);
-        texture.Apply();
-        GUI.skin.box.normal.background = texture;
-        GUI.Box(position, GUIContent.none);
-    }
-
     void OnGUI()
     {
-        DrawQuad(new Rect(10.0f, Screen.height - 40.0f, Screen.width - 20.0f, 30.0f), new Color(0.6f, 0.6f, 0.0f));
-        DrawQuad(new Rect(10.0f, Screen.height - 40.0f, (Screen.width - 20.0f) * jetpackFuel, 30.0f), Color.yellow);
+        GUIHelper.DrawQuad(new Rect(10.0f, Screen.height - 40.0f, Screen.width - 20.0f, 30.0f), new Color(0.6f, 0.6f, 0.0f));
+        GUIHelper.DrawQuad(new Rect(10.0f, Screen.height - 40.0f, (Screen.width - 20.0f) * jetpackFuel, 30.0f), Color.yellow);
         GUI.Label(new Rect(12.0f, Screen.height - 35.0f, 100.0f, 20.0f), "Jet Pack");
+
+        inventory.DrawGUI();
     }
 
     void UpdatePlayerPosition()
@@ -130,6 +125,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         UpdatePlayerPosition();
+        inventory.Update();
 
         targetEntity = null;
 
@@ -156,7 +152,7 @@ public class Player : MonoBehaviour
                     if (Input.GetButtonDown("Place"))
                     {
                         mouseDown = true;
-                        chunk.Entity.SetBlock(BlockType.Dirt, targetPlaceIndex.x, targetPlaceIndex.y, targetPlaceIndex.z);
+                        chunk.Entity.SetBlock(inventory.SelectedItem, targetPlaceIndex.x, targetPlaceIndex.y, targetPlaceIndex.z);
                     }
                     else if (Input.GetButtonDown("Remove"))
                     {

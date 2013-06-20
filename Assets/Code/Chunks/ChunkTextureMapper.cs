@@ -29,8 +29,8 @@ public class ChunkTextureMapper
         if (blockInfo == null)
             throw new InvalidOperationException("Missing BlockInfo attribute!");
 
-        const float invTexWidth = 1.0f / 16.0f, invTexHeight = 1.0f / 1.0f;
-        float offsetX = invTexWidth * blockInfo.TileX, offsetY = invTexHeight * blockInfo.TileY;
+        const float invTexWidth = 1.0f / 16.0f, invTexHeight = 1.0f / 16.0f;
+        float offsetX = invTexWidth * blockInfo.TileX, offsetY = invTexHeight * (15 - blockInfo.TileY);
 
         uvs.Add(new Vector2(offsetX, offsetY));
         uvs.Add(new Vector2(offsetX + invTexWidth, offsetY));

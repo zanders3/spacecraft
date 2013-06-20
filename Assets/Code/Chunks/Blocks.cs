@@ -25,7 +25,9 @@ public enum BlockType
     [BlockInfo("Reactor Core", 9, 0)]
     ReactorCore,
     [BlockInfo("Thruster", 15, 0)]
-    Thruster
+    Thruster,
+    [BlockInfo("Concrete", 0, 1)]
+    Concrete
 }
 
 public class BlockInfoAttribute : Attribute

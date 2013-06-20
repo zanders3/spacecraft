@@ -31,8 +31,8 @@ public class ChunkStore
     {
         int cx, cy, cz;
         int hash = PositionHash(x, y, z, out cx, out cy, out cz);
-        
-        //Debug.Log (cx + " " + cy + " " + cz + " -> " + hash);
+
+        //Debug.Log ("(" + x + " " + y + " " + z + ") -> " + cx + " " + cy + " " + cz + " -> " + hash);
         Chunk chunk;
         if (chunks.TryGetValue(hash, out chunk))
             return chunk;

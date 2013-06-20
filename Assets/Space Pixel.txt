@@ -55,7 +55,6 @@ Crafting
 	* Uranium Ore -> Fuel Rod
 	* Steel -> (fabricator) -> Airlock, (1/16 x) Power Core, 4x Power Conduit???
 
-
 * Mine resources (Dirt, Stone, Iron Ore, Uranium Ore, Copper Ore)
 	* Dirt + Stone x 2 + Iron x 8 + Copper x 6 -> Matter
 	* Uranium -> Fuel Pellet
@@ -69,13 +68,19 @@ Crafting
 
 * Foundation Entity
 	* A layer of concrete is generated on bottom layer, blocks cannot be placed below it.
-	* Climbing into pilot seat destroys the bottom layer and inits a ship entity (should be no difference?)
+	* Climbing into pilot seat destroys the bottom layer and inits a ship entity (should be no difference???)
+* Player Control
+	* Player can hold two 'weapons' - initially a mining laser and matteriser.
+	* Switch between them with tab
+	* Number keys pick blueprints, blueprint menu on Q.
+	* Blueprints cost combinations of inventory items.
 * Ship Entity
 	* Multiple pilot seats, thrusters and reactor cores.
 	* Pilot seat contains ship movement logic.
 	* Power simulation through wires to power ship systems (fluid sim, blocks add/remove energy)
 	* Air simulation (fluid sim, blocks add/remove air)
-	* Light transport (flood fill AGAIN but with blur averaging, iterative AGAIN)
+	* Heat simulation (fluid sim, blocks add/remove heat)
+	* Light transport (sum(neighbours/8)+lightamount)
 
 TODO:
 

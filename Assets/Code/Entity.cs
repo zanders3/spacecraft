@@ -86,7 +86,7 @@ public class Entity : MonoBehaviour
         return chunkStore.Get(cx, cy, cz);
     }
 
-	public void SetBlock(BlockType type, int gx, int gy, int gz)
+	public virtual void SetBlock(BlockType type, int gx, int gy, int gz)
 	{
 		Chunk chunk = chunkStore.Add(gx, gy, gz);
 
