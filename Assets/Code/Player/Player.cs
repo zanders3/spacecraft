@@ -6,7 +6,8 @@ public class Player : MonoBehaviour
     enum PlayerMovement
     {
         Planet,
-        Space
+        Space,
+        Ship
     }
 
     public static Player Instance = null;
@@ -41,8 +42,22 @@ public class Player : MonoBehaviour
         if (isColliding)
             return;
 
+        Transform parent = coll.gameObject.transform.parent;
+        if (parent != null)
+        {
+            if (parent.GetComponent<PlanetEntity>() != null)
+            {
+                playerMovement = PlayerMovement.Planet;
+            }
+            else if (parent.parent != null && parent.parent.GetComponent<FoundationEntity>() != null)
+            {
+                playerMovement = PlayerMovement.Ship;
+                up = parent.parent.up;
+            }
+        }
+
         for (int i = 0; i<coll.contacts.Length; i++)
-            if (Vector3.Dot(coll.contacts [i].normal, up) > 0.8f)
+            if (Vector3.Dot(coll.contacts[i].normal, up) > 0.9f)
             {
                 isColliding = true;
                 return;
@@ -78,6 +93,10 @@ public class Player : MonoBehaviour
             up = (transform.position - gravityPosition).normalized;
             rigidbody.AddForce(up * -10.0f);
         }
+        else if (playerMovement == PlayerMovement.Ship)
+        {
+            rigidbody.AddForce(up * -10.0f);
+        }
 
         right = Head.transform.right;
         forward = Head.transform.forward;
@@ -86,7 +105,7 @@ public class Player : MonoBehaviour
         Head.transform.rotation = Quaternion.AngleAxis(dy, right) * Quaternion.AngleAxis(dx, up) * Quaternion.LookRotation(forward, up);
         Head.transform.position = rigidbody.transform.position;
 
-        Vector3 forwardMoveVector = playerMovement == PlayerMovement.Planet ? Vector3.Cross(right, up) : forward;
+        Vector3 forwardMoveVector = playerMovement == PlayerMovement.Planet || playerMovement == PlayerMovement.Ship ? Vector3.Cross(right, up) : forward;
 
         Vector2 moveAxis = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("MoveX"), Input.GetAxis("MoveZ")), 1.0f);
         Vector3 movement = right * moveAxis.x + forwardMoveVector * moveAxis.y;

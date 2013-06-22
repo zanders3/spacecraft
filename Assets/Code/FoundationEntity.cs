@@ -1,10 +1,22 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class FoundationEntity : Entity
 {
     protected override IChunkGenerator CreateGenerator()
     {
         return new FoundationGenerator();
+    }
+
+    protected override List<Point3D> InitialiseBlocks()
+    {
+        return new List<Point3D>()
+        {
+            new Point3D(0, 0, 0),
+            new Point3D(1, 0, 0),
+            new Point3D(0, 0, 1),
+            new Point3D(1, 0, 1)
+        };
     }
 
     public override void SetBlock(BlockType type, int gx, int gy, int gz)
