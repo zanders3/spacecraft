@@ -80,7 +80,6 @@ public class ChunkPrefabManager
         foreach (var pair in existingPrefabs)
             foreach (var prefab in pair.Value)
             {
-            Debug.Log("DESTROY");
                 GameObject.Destroy(prefab);
             }
 
