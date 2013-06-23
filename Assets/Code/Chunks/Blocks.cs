@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using System.Linq;
 
 public enum BlockType
 {
@@ -14,32 +16,67 @@ public enum BlockType
     UraniumOre,
     [BlockInfo("Copper Ore", 5, 0)]
     CopperOre,
-    
+    [BlockInfo("Bedrock", 15, 0)]
+    Bedrock,
+
     //'Man made' blocks
     [BlockInfo("Steel Block", 7, 0)]
     Steel,
-    [BlockInfo("Titanium Block", 8, 0)]
-    Titanium,
-    [BlockInfo("Fabricator", 10, 0)]
-    Fabricator,
-    [BlockInfo("Reactor Core", 9, 0)]
-    ReactorCore,
-    [BlockInfo("Thruster", 15, 0)]
+    [BlockInfo("Power Core", "Prefabs/PowerCore", 1, 2, 1)]
+    PowerCore,
+    [BlockInfo("Thruster", "Prefabs/Thruster", 2, 2, 1)]
     Thruster,
+    [BlockInfo("Pilot Seat", "Prefabs/PilotSeat", 1, 2, 1)]
+    PilotSeat,
     [BlockInfo("Concrete", 0, 1)]
     Concrete
 }
 
 public class BlockInfoAttribute : Attribute
 {
-    public string Name { get; set; }
-    public int TileX { get; set; }
-    public int TileY { get; set; }
+    public string Name;
+    public int TileX;
+    public int TileY;
+    public bool IsPrefab;
+
+    public string Prefab;
+    public Point3D PrefabSize;
 
     public BlockInfoAttribute(string name, int tileX, int tileY)
     {
         Name = name;
         TileX = tileX;
         TileY = tileY;
+        IsPrefab = false;
+    }
+
+    public BlockInfoAttribute(string name, string prefab, int sx, int sy, int sz)
+    {
+        Name = name;
+        Prefab = prefab;
+        PrefabSize = new Point3D(sx, sy, sz);
+        IsPrefab = true;
+    }
+
+    private static BlockInfoAttribute[] blockInfos;
+
+    static BlockInfoAttribute()
+    {
+        string[] typeNames = System.Enum.GetNames(typeof(BlockType));
+        blockInfos = new BlockInfoAttribute[typeNames.Length];
+        UnityEngine.Debug.Log(typeNames.Length);
+        for (int i = 0; i<typeNames.Length; i++)
+        {
+            MemberInfo info = typeof(BlockType).GetMember(typeNames[i]).FirstOrDefault();
+            if (info != null)
+            {
+                blockInfos[i] = (BlockInfoAttribute)info.GetCustomAttributes(typeof(BlockInfoAttribute), false).FirstOrDefault();
+            }
+        }
+    }
+
+    public static BlockInfoAttribute GetInfo(BlockType type)
+    {
+        return blockInfos[(int)type];
     }
 }

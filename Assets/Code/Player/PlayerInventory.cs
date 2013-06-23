@@ -13,11 +13,9 @@ public class PlayerInventory
     BlockType[] inventory = new BlockType[]
     {
         BlockType.Steel,
-        BlockType.ReactorCore,
-        BlockType.Fabricator,
-        BlockType.Thruster,
-        BlockType.Titanium,
-        BlockType.Concrete
+        BlockType.PowerCore,
+        BlockType.PilotSeat,
+        BlockType.Thruster
     };
 
     public void DrawGUI()

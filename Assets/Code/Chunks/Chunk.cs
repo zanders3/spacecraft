@@ -18,11 +18,13 @@ public struct Point3D
 
 //Renders the voxel mesh itself. Changes as blocks are placed.
 [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
-public class Chunk : MonoBehaviour
+public sealed class Chunk : MonoBehaviour
 {
 	public const int BlockSize = 8;
 	BlockType[,,] blocks = new BlockType[BlockSize+2, BlockSize+2, BlockSize+2];
     ChunkTextureMapper textureMapper = new ChunkTextureMapper();
+    ChunkPrefabManager prefabManager;
+    ChunkCollisionManager collisionManager;
 
     public Entity Entity
     {
@@ -117,60 +119,15 @@ public class Chunk : MonoBehaviour
     		GetComponent<MeshFilter>().sharedMesh = mesh;
         }
 
+        if (prefabManager == null)
+            prefabManager = new ChunkPrefabManager(transform);
+        prefabManager.UpdatePrefabs(ChunkPos, blocks);
+
         //Update the collision mesh
-        UpdateCollision();
+        if (collisionManager == null)
+            collisionManager = new ChunkCollisionManager(gameObject);
+        collisionManager.UpdateCollision(Entity.UseMeshCollider, blocks, ChunkPos, transform);
 	}
-
-    void UpdateCollision()
-    {
-		if (Entity.UseMeshCollider)
-        {
-            MeshCollider collider = GetComponent<MeshCollider>();
-            if (collider == null) collider = gameObject.AddComponent<MeshCollider>();
-
-            collider.sharedMesh = null;
-            collider.sharedMesh = GetComponent<MeshFilter>().sharedMesh;
-        } 
-        else
-        {
-            Stack<Transform> existingBoxes = new Stack<Transform>();
-            for (int i = 0; i<transform.childCount; i++)
-                existingBoxes.Push(transform.GetChild(i));
-        
-            for (int x = 1; x<BlockSize+1; x++)
-            {
-                for (int y = 1; y<BlockSize+1; y++)
-                {
-                    for (int z = 1; z<BlockSize+1; z++)
-                    {
-                        if (blocks [x, y, z] != BlockType.Empty)
-                        {
-                            if (blocks [x + 1, y, z] == BlockType.Empty || blocks [x, y + 1, z] == BlockType.Empty || blocks [x, y, z + 1] == BlockType.Empty ||
-                                blocks [x - 1, y, z] == BlockType.Empty || blocks [x, y - 1, z] == BlockType.Empty || blocks [x, y, z - 1] == BlockType.Empty)
-                            {
-                                Transform box;
-                                if (existingBoxes.Count > 0)
-                                    box = existingBoxes.Pop();
-                                else
-                                {
-                                    BoxCollider collider = new GameObject("Collider").AddComponent<BoxCollider>();
-                                    collider.transform.parent = transform;
-                                    collider.transform.localRotation = Quaternion.identity;
-                                    collider.center = new Vector3(0.5f, 0.5f, 0.5f);
-                                    box = collider.transform;
-                                }
-
-                                box.localPosition = new Vector3(x - 1, y - 1, z - 1);
-                            }
-                        }
-                    }
-                }
-            }
-
-            while (existingBoxes.Count > 0)
-                Destroy(existingBoxes.Pop().gameObject);
-        }
-    }
 
 	void GenerateMesh(Point3D n, Point3D t, Point3D bn, Point3D o, bool flip, ref List<Vector3> verts, ref List<Vector3> normals, ref List<Vector2> tex, ref List<int> tris)
 	{
@@ -183,7 +140,10 @@ public class Chunk : MonoBehaviour
 			{
 				for (int z = 1; z<BlockSize+1; z++) 
 				{
-					if (blocks[x,y,z] != BlockType.Empty && blocks[x+n.x,y+n.y,z+n.z] == BlockType.Empty)
+                    BlockType current = blocks[x,y,z], next = blocks[x+n.x,y+n.y,z+n.z];
+
+					if (current != BlockType.Empty && !BlockInfoAttribute.GetInfo(current).IsPrefab && 
+                        (next == BlockType.Empty || BlockInfoAttribute.GetInfo(next).IsPrefab))
 					{
 						int i = verts.Count;
 						if (flip)

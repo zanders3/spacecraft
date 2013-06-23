@@ -46,6 +46,8 @@
   <ItemGroup>
      <Compile Include="Assets\Code\Chunks\Blocks.cs" />
      <Compile Include="Assets\Code\Chunks\Chunk.cs" />
+     <Compile Include="Assets\Code\Chunks\ChunkCollisionManager.cs" />
+     <Compile Include="Assets\Code\Chunks\ChunkPrefabManager.cs" />
      <Compile Include="Assets\Code\Chunks\ChunkStore.cs" />
      <Compile Include="Assets\Code\Chunks\ChunkTextureMapper.cs" />
      <Compile Include="Assets\Code\Entity.cs" />

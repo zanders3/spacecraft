@@ -10,7 +10,7 @@ public class PlanetGenerator : IChunkGenerator
         {
             HeightLimit = 15.5f,
             HeightScale = 0.5f,
-            Type = BlockType.Thruster
+            Type = BlockType.Bedrock
         },
         new BlockLayerInfo()
         {

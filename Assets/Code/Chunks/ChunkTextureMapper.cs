@@ -6,28 +6,9 @@ using System;
 
 public class ChunkTextureMapper
 {
-    private BlockInfoAttribute[] blockInfos;
-
-    public ChunkTextureMapper()
-    {
-        string[] typeNames = System.Enum.GetNames(typeof(BlockType));
-        blockInfos = new BlockInfoAttribute[typeNames.Length];
-
-        for (int i = 0; i<typeNames.Length; i++)
-        {
-            MemberInfo info = typeof(BlockType).GetMember(typeNames[i]).FirstOrDefault();
-            if (info != null)
-            {
-                blockInfos[i] = (BlockInfoAttribute)info.GetCustomAttributes(typeof(BlockInfoAttribute), false).FirstOrDefault();
-            }
-        }
-    }
-
     public void MapTexture(BlockType type, ref List<Vector2> uvs)
     {
-        BlockInfoAttribute blockInfo = blockInfos[(int)type];
-        if (blockInfo == null)
-            throw new InvalidOperationException("Missing BlockInfo attribute!");
+        BlockInfoAttribute blockInfo = BlockInfoAttribute.GetInfo(type);
 
         const float invTexWidth = 1.0f / 16.0f, invTexHeight = 1.0f / 16.0f;
         float offsetX = invTexWidth * blockInfo.TileX, offsetY = invTexHeight * (15 - blockInfo.TileY);

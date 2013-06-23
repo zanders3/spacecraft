@@ -2,10 +2,8 @@ Space Pixel
 
 - A space ship 3D voxel game minecraft clone because.
 
-- Build a ship from first principles, mining ore and processing it.
-- Break orbit.
-- Build an FTL drive (which are massive and require LOTS of power and rare materials)
-- Explore the galaxy
+- Wake up aboard a ship without power that crashes into a planet.
+- Reconnect the ship and fix it up as a tutorial.
 
 Entity Hierarchy
 * Galaxy -> Solar System -> Planets
@@ -68,12 +66,7 @@ Crafting
 
 * Foundation Entity
 	* A layer of concrete is generated on bottom layer, blocks cannot be placed below it.
-	* Climbing into pilot seat destroys the bottom layer and inits a ship entity (should be no difference???)
-* Player Control
-	* Player can hold two 'weapons' - initially a mining laser and matteriser.
-	* Switch between them with tab
-	* Number keys pick blueprints, blueprint menu on Q.
-	* Blueprints cost combinations of inventory items.
+	* Climbing into pilot seat destroys the bottom layer and inits a ship entity. The scaffolding should be see through.
 * Ship Entity
 	* Multiple pilot seats, thrusters and reactor cores.
 	* Pilot seat contains ship movement logic.
@@ -81,6 +74,12 @@ Crafting
 	* Air simulation (fluid sim, blocks add/remove air)
 	* Heat simulation (fluid sim, blocks add/remove heat)
 	* Light transport (sum(neighbours/8)+lightamount)
+
+* Voxel engine improvements
+	* Ramps with 8x variations, steal placement rules from MC stairs.
+	* Pipes with 3x variations and 1x multi-block.
+	* Wires with similar variations.
+	* Multiple block covering blocks (e.g. airlock, power core)
 
 TODO:
 

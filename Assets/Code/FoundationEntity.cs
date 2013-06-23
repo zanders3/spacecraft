@@ -21,7 +21,7 @@ public class FoundationEntity : Entity
 
     public override void SetBlock(BlockType type, int gx, int gy, int gz)
     {
-        if (gx >= 0 && gy > 0 && gz >= 0 && gx < Chunk.BlockSize && gy < Chunk.BlockSize && gz < Chunk.BlockSize)
+        if (gx >= 0 && gy > 0 && gz >= 0 && gx < Chunk.BlockSize*2 && gy < Chunk.BlockSize*2 && gz < Chunk.BlockSize*2)
             base.SetBlock(type, gx, gy, gz);
     }
 }
