@@ -35,7 +35,6 @@ public class PlanetEntity : Entity
 
     public override Vector3 TransformVertex(Vector3 pos)
     {
-        //Vector3 chunkWorldPos = new Vector3(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize);
         Vector3 surfNormal = pos / PlanetScale;
         
         float height = 1.0f;
@@ -255,5 +254,18 @@ public class PlanetEntity : Entity
         }
         
         return position;
+    }
+
+    public override void SetBlock(BlockType type, Point3D g)
+    {
+        if (type == BlockType.PowerCore)
+        {
+            Vector3 pos = new Vector3(g.x, g.y, g.z);
+            pos = TransformVertex(pos);
+            Debug.Log(pos.normalized);
+            ShipEntity.CreateShip(transform.TransformPoint(pos), pos.normalized);
+        }
+        else
+            base.SetBlock(type, g);
     }
 }

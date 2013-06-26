@@ -26,7 +26,7 @@ public enum BlockType
     PowerCore,
     [BlockInfo("Thruster", "Prefabs/Thruster", 2, 2, 1)]
     Thruster,
-    [BlockInfo("Pilot Seat", "Prefabs/PilotSeat", 1, 2, 1)]
+    [BlockInfo("Pilot Seat", "Prefabs/PilotSeat", 1, 2, 1, true)]
     PilotSeat,
     [BlockInfo("Concrete", 0, 1)]
     Concrete
@@ -37,25 +37,27 @@ public class BlockInfoAttribute : Attribute
     public string Name;
     public int TileX;
     public int TileY;
-    public bool IsPrefab;
+    public bool IsPrefab, HasPlaceAction;
 
     public string Prefab;
     public Point3D PrefabSize;
 
-    public BlockInfoAttribute(string name, int tileX, int tileY)
+    public BlockInfoAttribute(string name, int tileX, int tileY, bool hasPlaceAction = false)
     {
         Name = name;
         TileX = tileX;
         TileY = tileY;
         IsPrefab = false;
+        HasPlaceAction = hasPlaceAction;
     }
 
-    public BlockInfoAttribute(string name, string prefab, int sx, int sy, int sz)
+    public BlockInfoAttribute(string name, string prefab, int sx, int sy, int sz, bool hasPlaceAction = false)
     {
         Name = name;
         Prefab = prefab;
         PrefabSize = new Point3D(sx, sy, sz);
         IsPrefab = true;
+        HasPlaceAction = hasPlaceAction;
     }
 
     private static BlockInfoAttribute[] blockInfos;

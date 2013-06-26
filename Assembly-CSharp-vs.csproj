@@ -51,9 +51,7 @@
      <Compile Include="Assets\Code\Chunks\ChunkStore.cs" />
      <Compile Include="Assets\Code\Chunks\ChunkTextureMapper.cs" />
      <Compile Include="Assets\Code\Entity.cs" />
-     <Compile Include="Assets\Code\FoundationEntity.cs" />
      <Compile Include="Assets\Code\Generators\FillGenerator.cs" />
-     <Compile Include="Assets\Code\Generators\FoundationGenerator.cs" />
      <Compile Include="Assets\Code\Generators\IChunkGenerator.cs" />
      <Compile Include="Assets\Code\Generators\PlanetGenerator.cs" />
      <Compile Include="Assets\Code\Generators\PlanetGenerators\LayerGenerator.cs" />
@@ -63,6 +61,7 @@
      <Compile Include="Assets\Code\Player\GUIHelper.cs" />
      <Compile Include="Assets\Code\Player\Player.cs" />
      <Compile Include="Assets\Code\Player\PlayerInventory.cs" />
+     <Compile Include="Assets\Code\ShipEntity.cs" />
      <None Include="Assets\Space Pixel.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

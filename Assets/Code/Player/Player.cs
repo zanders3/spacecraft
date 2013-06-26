@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
             {
                 playerMovement = PlayerMovement.Planet;
             }
-            else if (parent.parent != null && parent.parent.GetComponent<FoundationEntity>() != null)
+            else if (parent.parent != null && parent.parent.GetComponent<ShipEntity>() != null)
             {
                 playerMovement = PlayerMovement.Ship;
                 up = parent.parent.up;
@@ -170,13 +170,17 @@ public class Player : MonoBehaviour
                 {
                     if (Input.GetButtonDown("Place"))
                     {
+                        BlockInfoAttribute blockInfo = BlockInfoAttribute.GetInfo(chunk.Entity.GetBlock(targetIndex.x, targetIndex.y, targetIndex.z));
+                        if (blockInfo != null && blockInfo.HasPlaceAction)
+                            chunk.Entity.BlockAction(targetPlaceIndex.x, targetPlaceIndex.y, targetPlaceIndex.z);
+
                         mouseDown = true;
-                        chunk.Entity.SetBlock(inventory.SelectedItem, targetPlaceIndex.x, targetPlaceIndex.y, targetPlaceIndex.z);
+                        chunk.Entity.SetBlock(inventory.SelectedItem, targetPlaceIndex);
                     }
                     else if (Input.GetButtonDown("Remove"))
                     {
                         mouseDown = true;
-                        chunk.Entity.SetBlock(BlockType.Empty, targetIndex.x, targetIndex.y, targetIndex.z);
+                        chunk.Entity.SetBlock(BlockType.Empty, targetIndex);
                     }
                 }
             }  

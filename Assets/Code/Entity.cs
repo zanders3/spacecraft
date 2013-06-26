@@ -39,6 +39,10 @@ public class Entity : MonoBehaviour
         };
     }
 
+    protected virtual void Setup()
+    {
+    }
+
 	void Start()
 	{
 		chunkStore = new ChunkStore(CreateGenerator(), Material, transform);
@@ -47,6 +51,7 @@ public class Entity : MonoBehaviour
             ChunkPos = chunkPos,
             WorldPos = TransformVertex(new Vector3(chunkPos.x, chunkPos.y, chunkPos.z) * Chunk.BlockSize)
         }).ToList();
+        Setup();
 	}
 
     const float chunkInstantiateDistance = Chunk.BlockSize * 3;
@@ -86,30 +91,34 @@ public class Entity : MonoBehaviour
         return chunkStore.Get(cx, cy, cz);
     }
 
-	public virtual void SetBlock(BlockType type, int gx, int gy, int gz)
-	{
-		Chunk chunk = chunkStore.Add(gx, gy, gz);
+    public virtual void BlockAction(int x, int y, int z)
+    {
+    }
 
-        int x = gx < 0 ? Chunk.BlockSize - ((-gx-1) % Chunk.BlockSize) - 1 : gx % Chunk.BlockSize;
-        int y = gy < 0 ? Chunk.BlockSize - ((-gy-1) % Chunk.BlockSize) - 1 : gy % Chunk.BlockSize;
-        int z = gz < 0 ? Chunk.BlockSize - ((-gz-1) % Chunk.BlockSize) - 1 : gz % Chunk.BlockSize;
+	public virtual void SetBlock(BlockType type, Point3D g)
+	{
+		Chunk chunk = chunkStore.Add(g.x, g.y, g.z);
+
+        int x = g.x < 0 ? Chunk.BlockSize - ((-g.x-1) % Chunk.BlockSize) - 1 : g.x % Chunk.BlockSize;
+        int y = g.y < 0 ? Chunk.BlockSize - ((-g.y-1) % Chunk.BlockSize) - 1 : g.y % Chunk.BlockSize;
+        int z = g.z < 0 ? Chunk.BlockSize - ((-g.z-1) % Chunk.BlockSize) - 1 : g.z % Chunk.BlockSize;
 
 		chunk.SetBlock(type, x, y, z);
 
         if (x == 0)
-            UpdateChunk(chunkStore.Get(gx - 1, gy, gz));
+            UpdateChunk(chunkStore.Get(g.x - 1, g.y, g.z));
         else if (x == Chunk.BlockSize - 1)
-            UpdateChunk(chunkStore.Get(gx + 1, gy, gz));
+            UpdateChunk(chunkStore.Get(g.x + 1, g.y, g.z));
 
         if (y == 0)
-            UpdateChunk(chunkStore.Get(gx, gy - 1, gz));
+            UpdateChunk(chunkStore.Get(g.x, g.y - 1, g.z));
         else if (y == Chunk.BlockSize - 1)
-            UpdateChunk(chunkStore.Get(gx, gy + 1, gz));
+            UpdateChunk(chunkStore.Get(g.x, g.y + 1, g.z));
 
         if (z == 0)
-            UpdateChunk(chunkStore.Get(gx, gy, gz - 1));
+            UpdateChunk(chunkStore.Get(g.x, g.y, g.z - 1));
         else if (z == Chunk.BlockSize - 1)
-            UpdateChunk(chunkStore.Get(gx, gy, gz + 1));
+            UpdateChunk(chunkStore.Get(g.x, g.y, g.z + 1));
 
         UpdateChunk(chunk);
 	}
@@ -120,9 +129,14 @@ public class Entity : MonoBehaviour
             chunkUpdates.Add(chunk);
     }
 
-	public BlockType GetBlock(int x, int y, int z)
+	public BlockType GetBlock(int gx, int gy, int gz)
 	{
-		Chunk chunk = chunkStore.Get(x, y, z);
+		Chunk chunk = chunkStore.Get(gx, gy, gz);
+
+        int x = gx < 0 ? Chunk.BlockSize - ((-gx-1) % Chunk.BlockSize) - 1 : gx % Chunk.BlockSize;
+        int y = gy < 0 ? Chunk.BlockSize - ((-gy-1) % Chunk.BlockSize) - 1 : gy % Chunk.BlockSize;
+        int z = gz < 0 ? Chunk.BlockSize - ((-gz-1) % Chunk.BlockSize) - 1 : gz % Chunk.BlockSize;
+
 		if (chunk == null)
 			return BlockType.Empty;
 		else
