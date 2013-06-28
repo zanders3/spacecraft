@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class ShipEntity : Entity
 {
+    private int blockCount = 0;
+
     public override bool UseMeshCollider
     {
         get
@@ -25,7 +27,20 @@ public class ShipEntity : Entity
     {
         ShipEntity ship = new GameObject("Ship").AddComponent<ShipEntity>();
         ship.transform.position = pos;
-        ship.transform.rotation = Quaternion.LookRotation(Vector3.forward, up);
+        ship.transform.rotation = Quaternion.LookRotation(up) * Quaternion.AngleAxis(90.0f, Vector3.right);
+    }
+
+    public override void SetBlock(BlockType type, Point3D g)
+    {
+        if (type == BlockType.Empty)
+            blockCount--;
+        else
+            blockCount++;
+
+        if (blockCount <= 0)
+            Destroy(gameObject);
+
+        base.SetBlock(type, g);
     }
 }
 
