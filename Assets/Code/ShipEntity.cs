@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 public class ShipEntity : Entity
 {
-    private int blockCount = 0;
-
     public override bool UseMeshCollider
     {
         get
@@ -23,24 +21,24 @@ public class ShipEntity : Entity
         return new FillGenerator(BlockType.Empty);
     }
 
-    public static void CreateShip(Vector3 pos, Vector3 up)
+    public static void CreateShip(Material material, Vector3 pos, Vector3 up)
     {
         ShipEntity ship = new GameObject("Ship").AddComponent<ShipEntity>();
+        ship.gameObject.AddComponent<Rigidbody>();
+        ship.Material = material;
         ship.transform.position = pos;
         ship.transform.rotation = Quaternion.LookRotation(up) * Quaternion.AngleAxis(90.0f, Vector3.right);
     }
 
-    public override void SetBlock(BlockType type, Point3D g)
+    protected override void OnChunksUpdated()
     {
-        if (type == BlockType.Empty)
-            blockCount--;
-        else
-            blockCount++;
+        int mass = chunkStore.Mass;
 
-        if (blockCount <= 0)
+        Debug.Log("Mass " + mass);
+        if (mass <= 0)
+        {
             Destroy(gameObject);
-
-        base.SetBlock(type, g);
+        }
     }
 }
 

@@ -26,6 +26,8 @@ public sealed class Chunk : MonoBehaviour
     ChunkPrefabManager prefabManager;
     ChunkCollisionManager collisionManager;
 
+    public int Mass { get; private set; }
+
     public Entity Entity
     {
         get { return transform.parent.GetComponent<Entity>(); }
@@ -73,6 +75,8 @@ public sealed class Chunk : MonoBehaviour
 
 	public void UpdateChunk()
 	{
+        CalculateMass();
+
         //Copy neighbour chunks
         {
             //Top + Bottom
@@ -119,14 +123,15 @@ public sealed class Chunk : MonoBehaviour
     		GetComponent<MeshFilter>().sharedMesh = mesh;
         }
 
+        //Create or destroy any prefabs
         if (prefabManager == null)
             prefabManager = new ChunkPrefabManager(transform);
         prefabManager.UpdatePrefabs(ChunkPos, blocks);
 
         //Update the collision mesh
         if (collisionManager == null)
-            collisionManager = new ChunkCollisionManager(gameObject);
-        collisionManager.UpdateCollision(Entity.UseMeshCollider, blocks, ChunkPos, transform);
+            collisionManager = new ChunkCollisionManager(Entity.UseMeshCollider, gameObject);
+        collisionManager.UpdateCollision(blocks, ChunkPos, transform);
 	}
 
 	void GenerateMesh(Point3D n, Point3D t, Point3D bn, Point3D o, bool flip, ref List<Vector3> verts, ref List<Vector3> normals, ref List<Vector2> tex, ref List<int> tris)
@@ -187,6 +192,19 @@ public sealed class Chunk : MonoBehaviour
         worldPos = Entity.TransformVertex(worldPos);
         oPos = worldPos;
         verts.Add(worldPos);
+    }
+
+    void CalculateMass()
+    {
+        int mass = 0;
+
+        for (int x = 1; x<=Chunk.BlockSize; x++)
+            for (int y = 1; y<=Chunk.BlockSize; y++)
+                for (int z = 1; z<=Chunk.BlockSize; z++)
+                    if (blocks[x, y, z] != BlockType.Empty)
+                        mass++;
+
+        Mass = mass;
     }
 
 	void OnDrawGizmos()

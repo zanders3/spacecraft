@@ -19,6 +19,8 @@ public class ChunkStore
     Dictionary<int, Chunk> chunks = new Dictionary<int, Chunk>();
     IChunkGenerator generator;
 
+    public int Mass { get { return chunks.Values.Sum(chunk => chunk.Mass); } }
+
     static int PositionHash(int x, int y, int z, out int cx, out int cy, out int cz)
     {
         cx = x >= 0 ? x / Chunk.BlockSize : (x - Chunk.BlockSize + 1) / Chunk.BlockSize; 

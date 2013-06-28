@@ -262,7 +262,7 @@ public class PlanetEntity : Entity
         {
             Vector3 pos = new Vector3(g.x, g.y, g.z);
             pos = TransformVertex(pos);
-            ShipEntity.CreateShip(transform.TransformPoint(pos), transform.TransformDirection(pos.normalized));
+            ShipEntity.CreateShip(Material, transform.TransformPoint(pos), transform.TransformDirection(pos.normalized));
         }
         else
             base.SetBlock(type, g);

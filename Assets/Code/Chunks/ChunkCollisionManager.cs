@@ -7,16 +7,23 @@ public class ChunkCollisionManager
     private MeshCollider collider;
     private MeshFilter filter;
     private Stack<Transform> existingBoxes = new Stack<Transform>();
+    private bool useMeshCollider;
 
-    public ChunkCollisionManager(GameObject gameObject)
+    public ChunkCollisionManager(bool useMeshCollider, GameObject gameObject)
     {
+        this.useMeshCollider = useMeshCollider;
+
         filter = gameObject.GetComponent<MeshFilter>();
-        collider = gameObject.GetComponent<MeshCollider>();
-        if (collider == null)
-            collider = gameObject.AddComponent<MeshCollider>();
+
+        if (useMeshCollider)
+        {
+            collider = gameObject.GetComponent<MeshCollider>();
+            if (collider == null)
+                collider = gameObject.AddComponent<MeshCollider>();
+        }
     }
 
-    public void UpdateCollision(bool useMeshCollider, BlockType[,,] blocks, Point3D chunkPos, Transform transform)
+    public void UpdateCollision(BlockType[,,] blocks, Point3D chunkPos, Transform transform)
     {
         if (useMeshCollider)
         {
@@ -59,7 +66,7 @@ public class ChunkCollisionManager
                     }
                 }
             }
-            
+
             while (existingBoxes.Count > 0)
                 GameObject.Destroy(existingBoxes.Pop().gameObject);
 

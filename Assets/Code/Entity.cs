@@ -22,7 +22,7 @@ public class Entity : MonoBehaviour
     //A list of chunks that have yet to be generated
     private List<PendingChunk> pendingChunks = new List<PendingChunk>();
 
-    private ChunkStore chunkStore;
+    protected ChunkStore chunkStore;
 
     public virtual bool UseMeshCollider { get { return false; } }
 
@@ -83,7 +83,13 @@ public class Entity : MonoBehaviour
                 chunk.UpdateChunk();
 
             chunkUpdates.Clear();
+
+            OnChunksUpdated();
         }
+    }
+
+    protected virtual void OnChunksUpdated()
+    {
     }
 	
     public Chunk GetChunk(int cx, int cy, int cz)
