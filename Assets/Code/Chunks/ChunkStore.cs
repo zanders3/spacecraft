@@ -21,6 +21,12 @@ public class ChunkStore
 
     public int Mass { get { return chunks.Values.Sum(chunk => chunk.Mass); } }
 
+    public static int PositionHash(Point3D pos)
+    {
+        int cx, cy, cz;
+        return PositionHash(pos.x, pos.y, pos.z, out cx, out cy, out cz);
+    }
+
     static int PositionHash(int x, int y, int z, out int cx, out int cy, out int cz)
     {
         cx = x >= 0 ? x / Chunk.BlockSize : (x - Chunk.BlockSize + 1) / Chunk.BlockSize; 
