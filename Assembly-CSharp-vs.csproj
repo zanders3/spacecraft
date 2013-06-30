@@ -50,6 +50,8 @@
      <Compile Include="Assets\Code\Chunks\ChunkPrefabManager.cs" />
      <Compile Include="Assets\Code\Chunks\ChunkStore.cs" />
      <Compile Include="Assets\Code\Chunks\ChunkTextureMapper.cs" />
+     <Compile Include="Assets\Code\Chunks\IO\ChunkStorer.cs" />
+     <Compile Include="Assets\Code\Chunks\IO\EntityStore.cs" />
      <Compile Include="Assets\Code\Entity.cs" />
      <Compile Include="Assets\Code\Generators\FillGenerator.cs" />
      <Compile Include="Assets\Code\Generators\IChunkGenerator.cs" />

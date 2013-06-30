@@ -36,11 +36,17 @@ public class EntityStore : IDisposable, IChunkGenerator
     private StoredDictionary<int, int> hashToFileOffset;
     private IChunkGenerator generator;
     private ChunkStorer chunkStorer;
+    private int newChunkIndex;
 
     public EntityStore(IChunkGenerator generator, string entityID)
     {
+        UnityEngine.Debug.Log(Path.GetFullPath(entityID + ".index"));
         this.generator = generator;
         this.hashToFileOffset = new StoredDictionary<int, int>(entityID + ".index");
+
+        foreach (var pair in hashToFileOffset)
+            newChunkIndex = Math.Max(newChunkIndex, pair.Value + 1);
+
         this.chunkStorer = new ChunkStorer(entityID + ".chunks");
     }
 
@@ -49,21 +55,28 @@ public class EntityStore : IDisposable, IChunkGenerator
         int hash = ChunkStore.PositionHash(chunkPos);
         int chunkIndex;
         if (hashToFileOffset.TryGetValue(hash, out chunkIndex))
+        {
+            UnityEngine.Debug.Log("Load: " + chunkPos);
             return chunkStorer.Load(chunkIndex);
+        }
         else
             return generator.Generate(chunkPos);
     }
 
     public void StoreChunk(Point3D chunkPos, BlockType[,,] blocks)
     {
+        UnityEngine.Debug.Log("Store: " + chunkPos);
         int hash = ChunkStore.PositionHash(chunkPos);
 
         int chunkIndex;
         if (!hashToFileOffset.TryGetValue(hash, out chunkIndex))
         {
-            hashToFileOffset.Add(hash, chunkStorer.MaxIndex);
+            chunkIndex = newChunkIndex++;
+
+            hashToFileOffset.Add(hash, chunkIndex);
             hashToFileOffset.SaveDictionary();
-            chunkIndex = chunkStorer.MaxIndex;
+
+            UnityEngine.Debug.Log("New Chunk: " + chunkIndex);
         }
 
         chunkStorer.Save(chunkIndex, blocks);

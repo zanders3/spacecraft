@@ -11,26 +11,22 @@ public class PlanetEntity : Entity
     
     public override bool UseMeshCollider { get { return true; } }
 
-    protected override IChunkGenerator CreateGenerator()
+    protected override void Setup(out List<Point3D> blocks, out IChunkGenerator chunkGenerator, out string entityID)
     {
-        return new PlanetGenerator(planetScale, this);
-    }
-
-    protected override List<Point3D> InitialiseBlocks()
-    {
-        List<Point3D> blocks = new List<Point3D>();
+        chunkGenerator = new PlanetGenerator(planetScale, this);
+        blocks = new List<Point3D>();
         for (int x = -planetScale*3; x<planetScale*3; x++)
             for (int y = -planetScale*3; y<planetScale*3; y++)
                 for (int z = -planetScale*3; z<planetScale*3; z++)
-                {
-                    int xOut = x >= planetScale || x < -planetScale ? 1 : 0;
-                    int yOut = y >= planetScale || y < -planetScale ? 1 : 0;
-                    int zOut = z >= planetScale || z < -planetScale ? 1 : 0;
-                    if ((xOut + yOut + zOut) == 1)
-                        blocks.Add(new Point3D(x, y, z));
-                }
-
-        return blocks;
+            {
+                int xOut = x >= planetScale || x < -planetScale ? 1 : 0;
+                int yOut = y >= planetScale || y < -planetScale ? 1 : 0;
+                int zOut = z >= planetScale || z < -planetScale ? 1 : 0;
+                if ((xOut + yOut + zOut) == 1)
+                    blocks.Add(new Point3D(x, y, z));
+            }
+        
+        entityID = "Planet";
     }
 
     public override Vector3 TransformVertex(Vector3 pos)

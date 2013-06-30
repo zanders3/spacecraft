@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,7 +25,7 @@ public class ChunkStore
     public static int PositionHash(Point3D pos)
     {
         int cx, cy, cz;
-        return PositionHash(pos.x, pos.y, pos.z, out cx, out cy, out cz);
+        return PositionHash(pos.x * Chunk.BlockSize, pos.y * Chunk.BlockSize, pos.z * Chunk.BlockSize, out cx, out cy, out cz);
     }
 
     static int PositionHash(int x, int y, int z, out int cx, out int cy, out int cz)

@@ -14,6 +14,11 @@ public struct Point3D
 	}
 
 	public int x, y, z;
+
+    public override string ToString()
+    {
+        return x + ", " + y + ", " + z;
+    }
 }
 
 //Renders the voxel mesh itself. Changes as blocks are placed.
@@ -54,6 +59,17 @@ public sealed class Chunk : MonoBehaviour
 		return blocks[x+1, y+1, z+1];
 	}
 	
+    public BlockType[,,] GetBlocks()
+    {
+        BlockType[,,] actualBlocks = new BlockType[Chunk.BlockSize, Chunk.BlockSize, Chunk.BlockSize];
+        for (int x = 0; x<BlockSize; x++)
+            for (int y = 0; y<BlockSize; y++)
+                for (int z = 0; z<BlockSize; z++)
+                    actualBlocks[x, y, z] = blocks[x + 1, y + 1, z + 1];
+
+        return actualBlocks;
+    }
+
     void CopyNeighbourChunk(Point3D minL, Point3D maxL, Point3D offset, Point3D chunkOffset)
     {
         Chunk chunk = Entity.GetChunk(ChunkPos.x * BlockSize + chunkOffset.x, ChunkPos.y * BlockSize + chunkOffset.y, ChunkPos.z * BlockSize + chunkOffset.z);

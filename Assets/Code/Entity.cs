@@ -6,7 +6,7 @@ using System.Collections.Generic;
 /// <summary>
 /// Represents a group of voxel chunks. A single entity is for example a planet. Chunks can move relative to each other and collide etc.
 /// </summary>
-public class Entity : MonoBehaviour
+public abstract class Entity : MonoBehaviour
 {
     class PendingChunk
     {
@@ -22,37 +22,51 @@ public class Entity : MonoBehaviour
     //A list of chunks that have yet to be generated
     private List<PendingChunk> pendingChunks = new List<PendingChunk>();
 
+    //Chunks that are waiting to be saved to disk
+    private List<Chunk> chunksChanged = new List<Chunk>();
+
     protected ChunkStore chunkStore;
+    private EntityStore entityStore;
 
     public virtual bool UseMeshCollider { get { return false; } }
 
-    protected virtual IChunkGenerator CreateGenerator()
+    protected abstract void Setup(out List<Point3D> blocksToInit, out IChunkGenerator chunkGenerator, out string entityID);
+
+    protected virtual void OnSetupCompleted()
     {
-        return new PlanetGenerator(1, this);
     }
 
-    protected virtual List<Point3D> InitialiseBlocks()
-    {
-        return new List<Point3D>()
-        {
-            new Point3D(0, 0, 0)
-        };
-    }
-
-    protected virtual void Setup()
+    protected virtual void OnChunksUpdated()
     {
     }
 
 	void Start()
 	{
-		chunkStore = new ChunkStore(CreateGenerator(), Material, transform);
-        pendingChunks = InitialiseBlocks().Select(chunkPos => new PendingChunk()
+        List<Point3D> blocksToInit;
+        IChunkGenerator generator;
+        string entityID;
+        Setup(out blocksToInit, out generator, out entityID);
+
+        entityStore = new EntityStore(generator, entityID);
+		chunkStore = new ChunkStore(entityStore, Material, transform);
+
+        pendingChunks = blocksToInit.Select(chunkPos => new PendingChunk()
         {
             ChunkPos = chunkPos,
             WorldPos = TransformVertex(new Vector3(chunkPos.x, chunkPos.y, chunkPos.z) * Chunk.BlockSize)
         }).ToList();
-        Setup();
+
+        OnSetupCompleted();
 	}
+
+    void OnDestroy()
+    {
+        if (entityStore != null)
+        {
+            entityStore.Dispose();
+            entityStore = null;
+        }
+    }
 
     const float chunkInstantiateDistance = Chunk.BlockSize * 3;
 
@@ -86,10 +100,16 @@ public class Entity : MonoBehaviour
 
             OnChunksUpdated();
         }
-    }
 
-    protected virtual void OnChunksUpdated()
-    {
+        if (chunksChanged.Count > 0)
+        {
+            Debug.Log("Saving " + chunksChanged.Count);
+
+            foreach (Chunk chunk in chunksChanged)
+                entityStore.StoreChunk(chunk.ChunkPos, chunk.GetBlocks());
+
+            chunksChanged.Clear();
+        }
     }
 	
     public Chunk GetChunk(int cx, int cy, int cz)
@@ -110,6 +130,8 @@ public class Entity : MonoBehaviour
         int z = g.z < 0 ? Chunk.BlockSize - ((-g.z-1) % Chunk.BlockSize) - 1 : g.z % Chunk.BlockSize;
 
 		chunk.SetBlock(type, x, y, z);
+
+        chunksChanged.Add(chunk);
 
         if (x == 0)
             UpdateChunk(chunkStore.Get(g.x - 1, g.y, g.z));

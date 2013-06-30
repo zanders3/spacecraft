@@ -11,14 +11,16 @@ public class ShipEntity : Entity
         }
     }
 
-    protected override void Setup()
+    protected override void Setup(out List<Point3D> blocksToInit, out IChunkGenerator chunkGenerator, out string entityID)
     {
-        SetBlock(BlockType.PowerCore, Point3D.Zero);
+        blocksToInit = new List<Point3D>() { Point3D.Zero };
+        chunkGenerator = new FillGenerator(BlockType.Empty);
+        entityID = "Ship";
     }
 
-    protected override IChunkGenerator CreateGenerator()
+    protected override void OnSetupCompleted()
     {
-        return new FillGenerator(BlockType.Empty);
+        SetBlock(BlockType.PowerCore, Point3D.Zero);
     }
 
     public static void CreateShip(Material material, Vector3 pos, Vector3 up)

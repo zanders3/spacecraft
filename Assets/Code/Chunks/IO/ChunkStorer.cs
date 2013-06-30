@@ -3,7 +3,6 @@ using System.IO;
 
 public class ChunkStorer : IDisposable
 {
-    public int MaxIndex { get; private set; }
     public const int ChunkLength = Chunk.BlockSize * Chunk.BlockSize * Chunk.BlockSize;
 
     private FileStream fileStream;
@@ -11,10 +10,9 @@ public class ChunkStorer : IDisposable
     public ChunkStorer(string filename)
     {
         fileStream = new FileStream(filename, FileMode.OpenOrCreate);
-        MaxIndex = (int)(fileStream.Length / ChunkLength);
 
         if (fileStream.Length % ChunkLength != 0)
-            throw new InvalidDataException("File length must be a multiple of ChunkLength");
+            throw new ArgumentException("File length must be a multiple of ChunkLength");
     }
 
     /// <summary>
@@ -22,9 +20,6 @@ public class ChunkStorer : IDisposable
     /// </summary>
     public BlockType[,,] Load(int index)
     {
-        if (index >= MaxIndex)
-            throw new ArgumentException("index >= MaxIndex (" + index + " >= " + MaxIndex + ")");
-
         fileStream.Seek(index * ChunkLength, SeekOrigin.Begin);
 
         BlockType[,,] blocks = new BlockType[Chunk.BlockSize,Chunk.BlockSize,Chunk.BlockSize];
