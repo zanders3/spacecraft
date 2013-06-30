@@ -26,7 +26,7 @@ public abstract class Entity : MonoBehaviour
     private List<Chunk> chunksChanged = new List<Chunk>();
 
     protected ChunkStore chunkStore;
-    private EntityStore entityStore;
+    protected EntityStore entityStore;
 
     public virtual bool UseMeshCollider { get { return false; } }
 
@@ -49,6 +49,9 @@ public abstract class Entity : MonoBehaviour
 
         entityStore = new EntityStore(generator, entityID);
 		chunkStore = new ChunkStore(entityStore, Material, transform);
+
+        blocksToInit.AddRange(entityStore.GetSavedChunks());
+        blocksToInit = blocksToInit.Distinct().ToList();
 
         pendingChunks = blocksToInit.Select(chunkPos => new PendingChunk()
         {

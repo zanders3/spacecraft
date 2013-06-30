@@ -33,7 +33,7 @@ class StoredDictionary<T,U> : Dictionary<T, U>
 /// </summary>
 public class EntityStore : IDisposable, IChunkGenerator
 {
-    private StoredDictionary<int, int> hashToFileOffset;
+    private StoredDictionary<string, int> hashToFileOffset;
     private IChunkGenerator generator;
     private ChunkStorer chunkStorer;
     private int newChunkIndex;
@@ -42,7 +42,7 @@ public class EntityStore : IDisposable, IChunkGenerator
     {
         UnityEngine.Debug.Log(Path.GetFullPath(entityID + ".index"));
         this.generator = generator;
-        this.hashToFileOffset = new StoredDictionary<int, int>(entityID + ".index");
+        this.hashToFileOffset = new StoredDictionary<string, int>(entityID + ".index");
 
         foreach (var pair in hashToFileOffset)
             newChunkIndex = Math.Max(newChunkIndex, pair.Value + 1);
@@ -50,11 +50,19 @@ public class EntityStore : IDisposable, IChunkGenerator
         this.chunkStorer = new ChunkStorer(entityID + ".chunks");
     }
 
+    public List<Point3D> GetSavedChunks()
+    {
+        return hashToFileOffset.Keys.Select(pos =>
+        {
+            string[] parts = pos.Split(',');
+            return new Point3D(Convert.ToInt32(parts[0]), Convert.ToInt32(parts[1]), Convert.ToInt32(parts[2]));
+        }).ToList();
+    }
+
     public BlockType[,,] Generate(Point3D chunkPos)
     {
-        int hash = ChunkStore.PositionHash(chunkPos);
         int chunkIndex;
-        if (hashToFileOffset.TryGetValue(hash, out chunkIndex))
+        if (hashToFileOffset.TryGetValue(chunkPos.ToString(), out chunkIndex))
         {
             UnityEngine.Debug.Log("Load: " + chunkPos);
             return chunkStorer.Load(chunkIndex);
@@ -66,14 +74,13 @@ public class EntityStore : IDisposable, IChunkGenerator
     public void StoreChunk(Point3D chunkPos, BlockType[,,] blocks)
     {
         UnityEngine.Debug.Log("Store: " + chunkPos);
-        int hash = ChunkStore.PositionHash(chunkPos);
 
         int chunkIndex;
-        if (!hashToFileOffset.TryGetValue(hash, out chunkIndex))
+        if (!hashToFileOffset.TryGetValue(chunkPos.ToString(), out chunkIndex))
         {
             chunkIndex = newChunkIndex++;
 
-            hashToFileOffset.Add(hash, chunkIndex);
+            hashToFileOffset.Add(chunkPos.ToString(), chunkIndex);
             hashToFileOffset.SaveDictionary();
 
             UnityEngine.Debug.Log("New Chunk: " + chunkIndex);
