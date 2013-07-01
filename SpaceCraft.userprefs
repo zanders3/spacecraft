@@ -1,20 +1,22 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Code/ShipEntity.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Code/SolarSystem/SolarSystem.cs">
     <Files>
-      <File FileName="Assets/Code/Chunks/Chunk.cs" Line="65" Column="29" />
+      <File FileName="Assets/Code/Chunks/Chunk.cs" Line="20" Column="32" />
       <File FileName="Assets/Code/Chunks/ChunkTextureMapper.cs" Line="11" Column="20" />
       <File FileName="Assets/Code/Chunks/Blocks.cs" Line="30" Column="15" />
       <File FileName="Assets/Code/Chunks/ChunkPrefabManager.cs" Line="78" Column="9" />
       <File FileName="Assets/Code/Chunks/ChunkCollisionManager.cs" Line="69" Column="1" />
       <File FileName="Assets/Code/Generators/PlanetGenerator.cs" Line="13" Column="37" />
-      <File FileName="Assets/Code/Player/Player.cs" Line="104" Column="57" />
-      <File FileName="Assets/Code/ShipEntity.cs" Line="10" Column="26" />
-      <File FileName="Assets/Code/PlanetEntity.cs" Line="30" Column="6" />
-      <File FileName="Assets/Code/Chunks/ChunkStore.cs" Line="14" Column="5" />
-      <File FileName="Assets/Code/Entity.cs" Line="9" Column="16" />
-      <File FileName="Assets/Code/Chunks/IO/EntityStore.cs" Line="59" Column="24" />
-      <File FileName="Assets/Code/Chunks/IO/ChunkStorer.cs" Line="54" Column="5" />
+      <File FileName="Assets/Code/Player/Player.cs" Line="20" Column="2" />
+      <File FileName="Assets/Code/ShipEntity.cs" Line="24" Column="6" />
+      <File FileName="Assets/Code/PlanetEntity.cs" Line="31" Column="5" />
+      <File FileName="Assets/Code/Chunks/ChunkStore.cs" Line="23" Column="79" />
+      <File FileName="Assets/Code/Entity.cs" Line="50" Column="30" />
+      <File FileName="Assets/Code/Chunks/IO/EntityStore.cs" Line="60" Column="6" />
+      <File FileName="Assets/Code/Chunks/IO/ChunkStorer.cs" Line="41" Column="9" />
+      <File FileName="Assets/Code/SolarSystem/SolarSystem.cs" Line="19" Column="36" />
+      <File FileName="Assets/Code/SolarSystem/SolarSystemStore.cs" Line="48" Column="59" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -22,11 +24,9 @@
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="Assets" expanded="True">
               <Node name="Code" expanded="True">
-                <Node name="Chunks" expanded="True">
-                  <Node name="IO" expanded="True" />
+                <Node name="SolarSystem" expanded="True">
+                  <Node name="SolarSystem.cs" selected="True" />
                 </Node>
-                <Node name="Player" expanded="True" />
-                <Node name="ShipEntity.cs" selected="True" />
               </Node>
             </Node>
           </Node>

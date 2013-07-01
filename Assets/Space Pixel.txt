@@ -70,15 +70,11 @@ Crafting
 * Ship Entity
 	* Multiple pilot seats, thrusters and reactor cores.
 	* Pilot seat contains ship movement logic.
-	* Power simulation through wires to power ship systems (fluid sim, blocks add/remove energy)
-	* Air simulation (fluid sim, blocks add/remove air)
-	* Heat simulation (fluid sim, blocks add/remove heat)
-	* Light transport (sum(neighbours/8)+lightamount)
+	* Power simulation (just a node graph of power nodes)
 
 * Voxel engine improvements
 	* Ramps with 8x variations, steal placement rules from MC stairs.
-	* Pipes with 3x variations and 1x multi-block.
-	* Wires with similar variations.
+	* Pipes with a central block, then bits come off the centre to make it work. (so 6 x variations with 1 x middle bit)
 	* Multiple block covering blocks (e.g. airlock, power core)
 
 TODO:
@@ -91,12 +87,11 @@ TODO:
 		* Need grass on top layer
 		* Blocks with different textures on each face, differing per planet angle.
 * Ship creation
-	* Placement of shipyard
-		* Placement on planet surface
-		* Also useful for building construction
-	* Reactor core prefab
-	* Pilot seat
-	* Engine
-* Investigate voxel chipping (solid, wedge x 12 rotations, corner x 8)
-	* Mining rules: solid -> wedge x 2 -> corner x 2
-	* Nearest edge is chipped away.
+	* Right click on pilot seat to pilot the ship
+	* Ship saving/loading
+		* Basic load and save
+		* Need to store the world and all entities.
+	* Placement on planet surface 
+* Add more block types supported in voxel engine
+	* Wedges
+	* Corners

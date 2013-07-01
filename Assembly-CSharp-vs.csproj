@@ -64,6 +64,8 @@
      <Compile Include="Assets\Code\Player\Player.cs" />
      <Compile Include="Assets\Code\Player\PlayerInventory.cs" />
      <Compile Include="Assets\Code\ShipEntity.cs" />
+     <Compile Include="Assets\Code\SolarSystem\EntityInfo.cs" />
+     <Compile Include="Assets\Code\SolarSystem\SolarSystem.cs" />
      <None Include="Assets\Space Pixel.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
