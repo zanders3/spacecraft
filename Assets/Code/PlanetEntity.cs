@@ -6,7 +6,7 @@ using System.Collections.Generic;
 /// </summary>
 public class PlanetEntity : Entity
 {
-    int planetScale = 3;
+    public int planetScale = 3;
     public float PlanetScale { get { return Chunk.BlockSize * planetScale; } }
     
     public override bool UseMeshCollider { get { return true; } }
@@ -26,7 +26,7 @@ public class PlanetEntity : Entity
                     blocks.Add(new Point3D(x, y, z));
             }
         
-        entityID = "Planet";
+        entityID = gameObject.name;
     }
 
     public override Vector3 TransformVertex(Vector3 pos)

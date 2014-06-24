@@ -62,6 +62,8 @@
      <Compile Include="Assets\Code\Generators\PlanetGenerators\OreGenerator.cs" />
      <Compile Include="Assets\Code\Generators\SimplexNoise.cs" />
      <Compile Include="Assets\Code\PlanetEntity.cs" />
+     <Compile Include="Assets\OrbitCamera.cs" />
+     <Compile Include="Assets\OrbitTarget.cs" />
      <None Include="Assets\Space Pixel.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

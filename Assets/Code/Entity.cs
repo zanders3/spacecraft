@@ -6,6 +6,8 @@ using System.Collections.Generic;
 /// <summary>
 /// Represents a group of voxel chunks. A single entity is for example a planet. Chunks can move relative to each other and collide etc.
 /// </summary>
+[SelectionBase]
+[ExecuteInEditMode]
 public abstract class Entity : MonoBehaviour
 {
     class PendingChunk
@@ -44,6 +46,9 @@ public abstract class Entity : MonoBehaviour
 
 	void Start()
 	{
+        if (!Application.isPlaying)
+            return;
+
         List<Point3D> blocksToInit;
         IChunkGenerator generator;
         string entityID;
@@ -77,6 +82,9 @@ public abstract class Entity : MonoBehaviour
 
     void Update()
     {
+        if (!Application.isPlaying)
+            return;
+
         if (pendingChunks.Count > 0)
         {
             for (int i = 0; i<pendingChunks.Count; i++)

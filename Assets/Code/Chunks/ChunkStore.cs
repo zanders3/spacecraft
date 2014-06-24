@@ -52,7 +52,7 @@ public class ChunkStore
 
             Chunk chunk = (Chunk)new GameObject("Chunk").AddComponent<Chunk>();
             chunk.transform.parent = parentTransform;
-            chunk.transform.localPosition = Vector3.zero;//new Vector3(cx * Chunk.BlockSize, cy * Chunk.BlockSize, cz * Chunk.BlockSize);
+            chunk.transform.localPosition = Vector3.zero;
             chunk.transform.localRotation = Quaternion.identity;
             chunk.renderer.sharedMaterial = material;
             chunk.ChunkPos = new Point3D(cx, cy, cz);
