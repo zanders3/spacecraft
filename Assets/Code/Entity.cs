@@ -12,6 +12,7 @@ public abstract class Entity : MonoBehaviour
     {
         public Point3D ChunkPos;
         public Vector3 WorldPos;
+        public float CameraDist;
     }
 
     public Material Material;
@@ -57,7 +58,7 @@ public abstract class Entity : MonoBehaviour
         pendingChunks = blocksToInit.Select(chunkPos => new PendingChunk()
         {
             ChunkPos = chunkPos,
-            WorldPos = TransformVertex(new Vector3(chunkPos.x, chunkPos.y, chunkPos.z) * Chunk.BlockSize)
+            WorldPos = transform.TransformPoint(TransformVertex(new Vector3(chunkPos.x, chunkPos.y, chunkPos.z) * Chunk.BlockSize))
         }).ToList();
 
         OnSetupCompleted();
@@ -72,26 +73,24 @@ public abstract class Entity : MonoBehaviour
         }
     }
 
-    const float chunkInstantiateDistance = Chunk.BlockSize * 3;
+    const float chunkInstantiateDistance = Chunk.BlockSize * 6;
 
     void Update()
     {
         if (pendingChunks.Count > 0)
         {
-            Plane[] cameraPlanes = GeometryUtility.CalculateFrustumPlanes(Camera);
+            for (int i = 0; i<pendingChunks.Count; i++)
+                pendingChunks[i].CameraDist = Vector3.Distance(pendingChunks[i].WorldPos, Camera.transform.position);
 
-            for (int i = pendingChunks.Count-1; i>=0; i--)
+            pendingChunks.Sort((a,b) => a.CameraDist.CompareTo(b.CameraDist));
+
+            int numToProcess = Mathf.Min(pendingChunks.Count, 5);
+            for (int i = 0; i<numToProcess; i++)
             {
-                Vector3 worldPos = transform.TransformPoint(pendingChunks[i].WorldPos);
-                if (i == 0 ||
-                   (Vector3.Distance(worldPos, Camera.transform.position) < chunkInstantiateDistance && 
-                    GeometryUtility.TestPlanesAABB(cameraPlanes, new Bounds(worldPos, new Vector3(Chunk.BlockSize, Chunk.BlockSize, Chunk.BlockSize)))))
-                {
-                    Point3D chunkPos = pendingChunks[i].ChunkPos;
-                    chunkUpdates.Add(chunkStore.Add(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize));
-                    pendingChunks.RemoveAt(i);
-                }
+                Point3D chunkPos = pendingChunks[i].ChunkPos;
+                chunkUpdates.Add(chunkStore.Add(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize));
             }
+            pendingChunks.RemoveRange(0, numToProcess);
         }
 
         if (chunkUpdates.Count > 0)
