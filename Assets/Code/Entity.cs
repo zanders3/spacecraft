@@ -15,6 +15,7 @@ public abstract class Entity : MonoBehaviour
     }
 
     public Material Material;
+    public Camera Camera;
 
     //Chunks that will be processed on the next update
     private List<Chunk> chunkUpdates = new List<Chunk>();
@@ -77,17 +78,18 @@ public abstract class Entity : MonoBehaviour
     {
         if (pendingChunks.Count > 0)
         {
-            float chunkInstDistSquared = chunkInstantiateDistance * chunkInstantiateDistance;
+            Plane[] cameraPlanes = GeometryUtility.CalculateFrustumPlanes(Camera);
 
-            Vector3 playerPos = transform.InverseTransformPoint(Player.Instance.transform.position);
-            for (int i = 0; i<pendingChunks.Count; i++)
+            for (int i = pendingChunks.Count-1; i>=0; i--)
             {
-                if ((playerPos - pendingChunks[i].WorldPos).sqrMagnitude < chunkInstDistSquared)
+                Vector3 worldPos = transform.TransformPoint(pendingChunks[i].WorldPos);
+                if (i == 0 ||
+                   (Vector3.Distance(worldPos, Camera.transform.position) < chunkInstantiateDistance && 
+                    GeometryUtility.TestPlanesAABB(cameraPlanes, new Bounds(worldPos, new Vector3(Chunk.BlockSize, Chunk.BlockSize, Chunk.BlockSize)))))
                 {
                     Point3D chunkPos = pendingChunks[i].ChunkPos;
                     chunkUpdates.Add(chunkStore.Add(chunkPos.x * Chunk.BlockSize, chunkPos.y * Chunk.BlockSize, chunkPos.z * Chunk.BlockSize));
                     pendingChunks.RemoveAt(i);
-                    i--;
                 }
             }
         }

@@ -251,16 +251,4 @@ public class PlanetEntity : Entity
         
         return position;
     }
-
-    public override void SetBlock(BlockType type, Point3D g)
-    {
-        if (type == BlockType.PowerCore)
-        {
-            Vector3 pos = new Vector3(g.x, g.y, g.z);
-            pos = TransformVertex(pos);
-            SolarSystem.CreateShip(transform.TransformPoint(pos), transform.TransformDirection(pos.normalized));
-        }
-        else
-            base.SetBlock(type, g);
-    }
 }
