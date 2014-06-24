@@ -59,7 +59,7 @@ public class ChunkStore
             chunk.Generate(generator);
             chunks.Add(hash, chunk);
             return chunk;
-        } 
+        }
         else
         {
             return Get(x, y, z);

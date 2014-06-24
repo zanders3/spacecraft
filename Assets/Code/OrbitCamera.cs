@@ -19,6 +19,8 @@ public class OrbitCamera : MonoBehaviour
             View.y = Mathf.Clamp(View.y, 0.001f, Mathf.PI - 0.001f);
         }
 
+        Shader.SetGlobalVector("_SunlightPos", GameObject.Find("Sun").transform.position);
+
         float zoom = Zoom * Mathf.Sin(View.y);
         transform.position = TargetPlanet.transform.position + new Vector3(Mathf.Sin(View.x) * zoom, Mathf.Cos(View.y) * Zoom, Mathf.Cos(View.x) * zoom); 
         transform.LookAt(TargetPlanet.transform.position, Vector3.up);

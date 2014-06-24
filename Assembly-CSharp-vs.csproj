@@ -61,10 +61,12 @@
      <Compile Include="Assets\Code\Generators\PlanetGenerators\LayerGenerator.cs" />
      <Compile Include="Assets\Code\Generators\PlanetGenerators\OreGenerator.cs" />
      <Compile Include="Assets\Code\Generators\SimplexNoise.cs" />
+     <Compile Include="Assets\Code\OrbitCamera.cs" />
+     <Compile Include="Assets\Code\OrbitTarget.cs" />
      <Compile Include="Assets\Code\PlanetEntity.cs" />
-     <Compile Include="Assets\OrbitCamera.cs" />
-     <Compile Include="Assets\OrbitTarget.cs" />
+     <None Include="Assets\Shaders\Atmosphere.shader" />
      <None Include="Assets\Space Pixel.txt" />
+     <None Include="Assets\Shaders\Environment.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
